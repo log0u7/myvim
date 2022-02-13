@@ -12,7 +12,7 @@ fUsage(){
 }
 
 fList(){	
-	grep 'url\|path' .gitmodules | cut -d " " -f3 | awk 'NR%2{printf "%s\t=>\t",$0;next;}1'
+	grep 'url\|path' .gitmodules | cut -d " " -f3 | awk 'NR%2{printf "%s\t=>\t",$0;next;}1' | column -t
 }
 
 fStatus(){
