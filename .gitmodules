@@ -22,3 +22,6 @@
 [submodule "pack/plugins/start/neoinclude.vim"]
 	path = pack/plugins/start/neoinclude.vim
 	url = https://github.com/Shougo/neoinclude.vim
+[submodule "pack/plugins/start/vim-rooter"]
+	path = pack/plugins/start/vim-rooter
+	url = https://github.com/airblade/vim-rooter
