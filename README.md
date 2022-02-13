@@ -10,26 +10,35 @@
  ===( INK )==========\\|//====================
 _____\___/___________`---`______________________
 ```
-This project aim to provide a simple way for managing vims plugins using git submodules.
+This project aim to provide a lightwheight DevOps IDE and a simple way for managing vims plugins using git submodules.
 
-See : [Using git submodules](./using-git-submodules.md)
 ## Installation
+- Backup you installation :
+    ```bash
+    cp .vim .vim~
+    cp .vimrc .vimrc~ 
+    ```
 
 - Clone the repository :
     ```bash
-    git clone --recursive https://github.com/log0u7/myvim.git
+    git clone --recursive https://github.com/log0u7/myvim.git .vim
     ```
     _Note : You can ommit `--recursive` if you dont want to clone plugins i use.`_
 
-- Symlink `.vim` and `.vimrc`:
+- Symlink `.vimrc`:
     ```bash
-    ln -sf myvim ~/.vim
-    ln -sf myvim/vimrc ~/.vimrc
+    ln -sf ~/.vim/vimrc ~/.vimrc
     ```
 - Change remote origin for your git repository :
     ```bash
     cd ~/.vim
-    git remote set-url origin your_git_repository_url
+    git remote rename origin genesis
+    git remote add origin your_repository_url
+    ```
+    _Note : you can have multiple url on the same remote as backup_
+    ```
+    git remote set-url origin --add --push second_repository_url
+    git remote set-url origin --add --push third_repository_url
     ```
 
 ## Configure
@@ -39,4 +48,7 @@ you will have to change runtime path for `pack/plugins/start/` :
 execute pathogen#infect('pack/plugins/start/{}')
 ```
 
+Some plugins require third party installation or [configuration](./vimrc), refers to plugins documentation like [YouCompleteMe](https://github.com/ycm-core/YouCompleteMe#installation).
+
 ## Use plugins script
+`plugins` script is just an helper you can manage plugins manualy see [Using git submodules](./using-git-submodules.md) _(maybe not up to date)_.
