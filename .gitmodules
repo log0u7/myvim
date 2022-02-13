@@ -19,3 +19,6 @@
 [submodule "pack/plugins/start/vim-eunuch"]
 	path = pack/plugins/start/vim-eunuch
 	url = https://github.com/tpope/vim-eunuch
+[submodule "pack/plugins/start/neoinclude.vim"]
+	path = pack/plugins/start/neoinclude.vim
+	url = https://github.com/Shougo/neoinclude.vim
