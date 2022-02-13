@@ -79,3 +79,6 @@
 [submodule "pack/plugins/start/Vim-Jinja2-Syntax"]
 	path = pack/plugins/start/Vim-Jinja2-Syntax
 	url = https://github.com/Glench/Vim-Jinja2-Syntax
+[submodule "pack/plugins/start/salt-vim"]
+	path = pack/plugins/start/salt-vim
+	url = https://github.com/saltstack/salt-vim
