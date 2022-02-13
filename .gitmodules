@@ -64,3 +64,6 @@
 [submodule "pack/plugins/start/ansible-vim"]
 	path = pack/plugins/start/ansible-vim
 	url = https://github.com/pearofducks/ansible-vim
+[submodule "pack/plugins/start/Dockerfile.vim"]
+	path = pack/plugins/start/Dockerfile.vim
+	url = https://github.com/ekalinin/Dockerfile.vim
