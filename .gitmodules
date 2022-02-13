@@ -67,3 +67,6 @@
 [submodule "pack/plugins/start/Dockerfile.vim"]
 	path = pack/plugins/start/Dockerfile.vim
 	url = https://github.com/ekalinin/Dockerfile.vim
+[submodule "pack/plugins/start/undotree"]
+	path = pack/plugins/start/undotree
+	url = https://github.com/mbbill/undotree
