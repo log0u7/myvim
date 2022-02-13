@@ -10,3 +10,6 @@
 [submodule "pack/plugins/start/vim-bufferline"]
 	path = pack/plugins/start/vim-bufferline
 	url = https://github.com/bling/vim-bufferline
+[submodule "pack/plugins/start/vim-signify"]
+	path = pack/plugins/start/vim-signify
+	url = https://github.com/mhinz/vim-signify
