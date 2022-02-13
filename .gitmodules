@@ -82,3 +82,6 @@
 [submodule "pack/plugins/start/salt-vim"]
 	path = pack/plugins/start/salt-vim
 	url = https://github.com/saltstack/salt-vim
+[submodule "pack/plugins/start/vim-snippets"]
+	path = pack/plugins/start/vim-snippets
+	url = https://github.com/honza/vim-snippets
