@@ -73,3 +73,6 @@
 [submodule "pack/plugins/start/vdebug"]
 	path = pack/plugins/start/vdebug
 	url = https://github.com/vim-vdebug/vdebug
+[submodule "pack/plugins/start/bufexplorer"]
+	path = pack/plugins/start/bufexplorer
+	url = https://github.com/jlanzarotta/bufexplorer
