@@ -43,3 +43,6 @@
 [submodule "pack/plugins/start/matchit"]
 	path = pack/plugins/start/matchit
 	url = https://github.com/chrisbra/matchit
+[submodule "pack/plugins/start/vim-sensible"]
+	path = pack/plugins/start/vim-sensible
+	url = https://github.com/tpope/vim-sensible
