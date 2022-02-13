@@ -49,3 +49,6 @@
 [submodule "pack/plugins/start/vim-floaterm"]
 	path = pack/plugins/start/vim-floaterm
 	url = https://github.com/voldikss/vim-floaterm
+[submodule "pack/plugins/start/fugitive-gitlab.vim"]
+	path = pack/plugins/start/fugitive-gitlab.vim
+	url = https://github.com/tpope/fugitive-gitlab.vim
