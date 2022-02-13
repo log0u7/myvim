@@ -97,3 +97,6 @@
 [submodule "pack/plugins/start/markdown-preview.vim"]
 	path = pack/plugins/start/markdown-preview.vim
 	url = https://github.com/iamcco/markdown-preview.vim
+[submodule "pack/plugins/start/vim-minimap"]
+	path = pack/plugins/start/vim-minimap
+	url = https://github.com/severin-lemaignan/vim-minimap
