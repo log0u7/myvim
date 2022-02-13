@@ -31,3 +31,6 @@
 [submodule "pack/plugins/start/vim-virtualenv"]
 	path = pack/plugins/start/vim-virtualenv
 	url = https://github.com/jmcantrell/vim-virtualenv
+[submodule "pack/plugins/start/tmuxline.vim"]
+	path = pack/plugins/start/tmuxline.vim
+	url = https://github.com/edkolev/tmuxline.vim
