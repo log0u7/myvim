@@ -16,3 +16,6 @@
 [submodule "pack/plugins/start/syntastic"]
 	path = pack/plugins/start/syntastic
 	url = https://github.com/vim-syntastic/syntastic
+[submodule "pack/plugins/start/vim-eunuch"]
+	path = pack/plugins/start/vim-eunuch
+	url = https://github.com/tpope/vim-eunuch
