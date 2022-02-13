@@ -7,3 +7,6 @@
 [submodule "pack/plugins/start/vim-airline"]
 	path = pack/plugins/start/vim-airline
 	url = https://github.com/vim-airline/vim-airline
+[submodule "pack/plugins/start/vim-bufferline"]
+	path = pack/plugins/start/vim-bufferline
+	url = https://github.com/bling/vim-bufferline
