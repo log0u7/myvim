@@ -76,3 +76,6 @@
 [submodule "pack/plugins/start/bufexplorer"]
 	path = pack/plugins/start/bufexplorer
 	url = https://github.com/jlanzarotta/bufexplorer
+[submodule "pack/plugins/start/Vim-Jinja2-Syntax"]
+	path = pack/plugins/start/Vim-Jinja2-Syntax
+	url = https://github.com/Glench/Vim-Jinja2-Syntax
