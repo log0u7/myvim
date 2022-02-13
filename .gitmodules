@@ -94,3 +94,6 @@
 [submodule "pack/plugins/start/vim-devicons"]
 	path = pack/plugins/start/vim-devicons
 	url = https://github.com/ryanoasis/vim-devicons
+[submodule "pack/plugins/start/markdown-preview.vim"]
+	path = pack/plugins/start/markdown-preview.vim
+	url = https://github.com/iamcco/markdown-preview.vim
