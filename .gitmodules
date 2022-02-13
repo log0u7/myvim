@@ -100,3 +100,6 @@
 [submodule "pack/plugins/start/vim-minimap"]
 	path = pack/plugins/start/vim-minimap
 	url = https://github.com/severin-lemaignan/vim-minimap
+[submodule "pack/plugins/start/vim-hashicorp-tools"]
+	path = pack/plugins/start/vim-hashicorp-tools
+	url = https://github.com/hashivim/vim-hashicorp-tools
