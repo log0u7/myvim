@@ -25,7 +25,7 @@ set undofile
 
 " Command alias
 command W w !sudo tee > /dev/null %
-command Q qa
+command Q qa!
 
 "" NERDTree
 " Start NERDTree. If a file is specified, move the cursor to its window.
