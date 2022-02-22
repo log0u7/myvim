@@ -23,7 +23,7 @@ This project aim to provide a lightwheight DevOps IDE and a simple way for manag
     ```bash
     git clone --recursive https://github.com/log0u7/myvim.git .vim
     ```
-    _Note : You can ommit `--recursive` if you dont want to clone plugins i use.`_
+    _Note : You can ommit `--recursive` if you dont want to clone plugins i use._
 
 - Symlink `.vimrc`:
     ```bash
