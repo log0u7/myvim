@@ -43,7 +43,7 @@ This project aim to provide a lightwheight DevOps IDE and a simple way for manag
 
 ## Configure
 If you want to use [pathogen](https://github.com/tpope/vim-pathogen) instead of Vim 8's packages,
-you will have to change runtime path for `pack/plugins/start/` : 
+you will have to change runtime path for `pack/plugins/start/` in [vimrc](./vimrc) file : 
 ```vimscript
 execute pathogen#infect('pack/plugins/start/{}')
 ```
