@@ -94,3 +94,4 @@ let g:mkdp_open_to_the_world = 0
 
 autocmd FileType markdown nnoremap <buffer> <silent> <F8> :MarkdownPreview<CR>
 autocmd FileType markdown inoremap <buffer> <silent> <F8> :MarkdownPreview<CR>
+autocmd FileType yaml setlocal ts=2 sts=2 sw=2 expandtab
