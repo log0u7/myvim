@@ -80,7 +80,7 @@ fRemoveModule(){
 	echo "Removing $1 module in $2 path :"
 	git submodule deinit "$2"
 	git rm -rf "$2"
-	rm -rf .git/module/"$2"
+	rm -rf .git/modules/"$2"
 	git commit -m "Removed $1 modules"
 	exit 0
 }
