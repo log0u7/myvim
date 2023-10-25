@@ -103,3 +103,6 @@
 [submodule "pack/plugins/start/vim-hcl"]
 	path = pack/plugins/start/vim-hcl
 	url = https://github.com/jvirtanen/vim-hcl
+[submodule "pack/plugins/start/nerdtree-git-plugin"]
+	path = pack/plugins/start/nerdtree-git-plugin
+	url = https://github.com/Xuyuanp/nerdtree-git-plugin
