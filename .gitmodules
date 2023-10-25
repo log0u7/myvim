@@ -109,3 +109,6 @@
 [submodule "pack/plugins/start/fugitive-gitlab.vim"]
 	path = pack/plugins/start/fugitive-gitlab.vim
 	url = https://github.com/shumphrey/fugitive-gitlab.vim
+[submodule "pack/plugins/start/vim-nerdtree-syntax-highlight"]
+	path = pack/plugins/start/vim-nerdtree-syntax-highlight
+	url = https://github.com/tiagofumo/vim-nerdtree-syntax-highlight
