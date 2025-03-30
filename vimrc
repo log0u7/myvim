@@ -8,6 +8,7 @@ set background=dark
 set encoding=UTF-8
 set hlsearch
 set nocompatible
+set laststatus=2
 
 "set t_Co=256
 "let g:solarized_termcolors=256
@@ -95,3 +96,6 @@ let g:mkdp_open_to_the_world = 0
 autocmd FileType markdown nnoremap <buffer> <silent> <F8> :MarkdownPreview<CR>
 autocmd FileType markdown inoremap <buffer> <silent> <F8> :MarkdownPreview<CR>
 autocmd FileType yaml setlocal ts=2 sts=2 sw=2 expandtab
+
+"" Airline
+let g:airline_powerline_fonts = 1
