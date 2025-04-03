@@ -50,5 +50,5 @@ execute pathogen#infect('pack/plugins/start/{}')
 
 Some plugins require third party installation or [configuration](./vimrc), refers to plugins documentation like [YouCompleteMe](https://github.com/ycm-core/YouCompleteMe#installation).
 
-## Use plugins script
-`plugins` script is just an helper you can manage plugins manualy see [Using git submodules](./using-git-submodules.md) _(maybe not up to date)_.
+## (DEPRECATED) Use plugin-manager.bash script
+`plugin-manager.bash` script is just an helper you can manage plugins manualy see [Using git submodules](./using-git-submodules.md) _(maybe not up to date)_.
