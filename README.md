@@ -270,26 +270,38 @@ coc mappings (added to the mappings table):
 
 ## Known issues (historical: YCM era)
 
-- **YouCompleteMe nested submodules (declarative or not)**: the manager
+- **YouCompleteMe nested submodules (both install paths)**: the manager
   clones plugins non-recursively, so YCM's nested submodule
-  (`third_party/ycmd`) is missing right after the declarative auto-install.
-  This is independent of the `exec` option: with
+  (`third_party/ycmd`) is missing right after installation. Both install
+  paths are affected:
 
-  ```vim
-  Plugin 'ycm-core/YouCompleteMe', {'exec': './install.py --all'}
-  ```
+  - declarative, in the vimrc (with or without the `exec` hook):
 
-  the `exec` hook runs `install.py` while `third_party/ycmd` is still
-  absent, so the build fails (see the manager log, `COMMAND_FAILED`). Fix:
-  initialize the nested submodules first, then build:
+    ```vim
+    Plugin 'ycm-core/YouCompleteMe', {'exec': './install.py --all'}
+    ```
+
+    with the `exec` hook, `install.py` runs while `third_party/ycmd` is
+    still absent, so the build fails (see the manager log,
+    `COMMAND_FAILED`); without the hook, nothing runs at all;
+
+  - imperative, from the sidebar or the command line:
+
+    ```vim
+    :PluginManager add ycm-core/YouCompleteMe
+    ```
+
+    same result: no nested submodule, no build.
+
+  Fix in both cases: initialize the nested submodule first, then build:
 
   ```bash
   git -C pack/plugins/start/YouCompleteMe submodule update --init --recursive
   python3 pack/plugins/start/YouCompleteMe/install.py --all
   ```
 
-  (see post-install table). Without the recursive init, `install.py`
-  aborts with missing `third_party/ycmd`.
+  Without the recursive init, `install.py` aborts with missing
+  `third_party/ycmd`.
 
 ## Legacy
 
