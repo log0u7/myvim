@@ -23,10 +23,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Documentation
 
-- README known issue: YCM nested submodules are missing even with the
-  declarative install (the `exec` hook runs `install.py` before
-  `third_party/ycmd` exists): explicit two-step fix documented with an
-  example, now marked historical (YCM era)
+- README known issue: YCM nested submodules are missing for BOTH install
+  paths (declarative vimrc with or without the `exec` hook, and
+  `:PluginManager add`): explicit two-step fix documented with examples,
+  now marked historical (YCM era)
 
 ### Added
 
