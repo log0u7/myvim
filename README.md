@@ -125,9 +125,8 @@ PluginBegin
   Plugin 'jlanzarotta/bufexplorer'
   Plugin 'mbbill/undotree'
   Plugin 'severin-lemaignan/vim-minimap'
-  " --- completion / IDE ---
-  Plugin 'ycm-core/YouCompleteMe', {'exec': './install.py --all'}
-  Plugin 'Shougo/neoinclude.vim'
+  " --- completion / LSP (coc.nvim replaced YouCompleteMe) ---
+  Plugin 'neoclide/coc.nvim', {'branch': 'release'}
   Plugin 'honza/vim-snippets'
   Plugin 'SirVer/ultisnips'
   " --- linting (async; replaces syntastic) ---
@@ -178,7 +177,7 @@ back the setup up (`:PluginManager backup` once a remote exists).
 
 | Plugin | Action |
 |---|---|
-| YouCompleteMe | Initialize its nested submodules first: `git -C pack/plugins/start/YouCompleteMe submodule update --init --recursive`, then `python3 install.py --all` (requires cmake, python3-dev, node, go) |
+| coc.nvim | Nothing to build: declared extensions (`g:coc_global_extensions` in `plugin_coc.vim`) auto-install at first start. Generic LSP servers (terraform-ls) are configured in the same file and need their binary in PATH |
 | markdown-preview.nvim | Run `:call mkdp#util#install()` once (downloads prebuilt assets, no npm needed) |
 | fzf | Nothing to do: `{'dir': 'fzf', 'exec': './install --all'}` installs the binary |
 
@@ -217,8 +216,10 @@ let g:gitlab_api_keys = {'gitlab.com': 'YOURTOKEN'}
 | `<F8>` | Markdown Preview (markdown buffers) |
 | `<C-p>` | CtrlP files |
 | `<leader>p` / `<leader>b` / `<leader>g` | fzf Files / Buffers / Git files |
+| `gd` / `K` / `<leader>d` / ... | coc.nvim LSP actions (see the coc.nvim section) |
 
-All mappings live in `plugin/vim_mappings.vim` — edit there, not in the
+All mappings live in `plugin/vim_mappings.vim` (and
+`plugin/plugin_coc.vim` for the LSP ones) — edit there, not in the
 `plugin_*.vim` files.
 
 ## Why a minimal vimrc
@@ -232,7 +233,42 @@ MyVim plugin, so the vimrc stays declarative: settings evolve in the plugin
 repo, plugin versions are pinned as submodules, and `~/.vim` remains a
 thin, reproducible list.
 
-## Known issues
+## coc.nvim — LSP engine (YouCompleteMe retired)
+
+After more than a decade of loyal service, YouCompleteMe was retired on
+2026-09-16 and replaced by [coc.nvim](https://github.com/neoclide/coc.nvim).
+Thank you, YCM — a decade of inline completion and semantic highlighting
+carried this IDE through its Vim 8 years.
+
+Why the switch, for a DevOps/SRE stack:
+
+| | YCM | coc.nvim |
+|---|---|---|
+| Language support | fixed ycmd completers (clangd, go, jedi...) | **any LSP server** |
+| DevOps servers | none | ansible-language-server, yaml-ls, bash-ls, dockerfile-ls, terraform-ls... |
+| Build step | `install.py --all` + nested submodules | none (extensions auto-install) |
+| Project health | maintenance mode | active ecosystem |
+
+Configuration lives in `plugin/plugin_coc.vim`: the extension list
+(`g:coc_global_extensions`: yaml, json, git, sh, docker, toml, ansible,
+vimlsp), the generic `terraform-ls` server (needs `terraform-ls` in PATH),
+and the mappings below. ALE keeps the devops linters with LSP disabled
+(`ale_disable_lsp=1`); set `let g:ale_enabled = 0` if you prefer coc-only
+diagnostics.
+
+coc mappings (added to the mappings table):
+
+| Key | Action |
+|---|---|
+| `gd` / `gr` / `gi` | definition / references / implementation |
+| `K` | hover documentation |
+| `[g` / `]g` | previous / next diagnostic |
+| `<leader>rn` | rename symbol |
+| `<leader>ca` | code action |
+| `<leader>d` | diagnostics list |
+| `<leader>o` | outline |
+
+## Known issues (historical — YCM era)
 
 - **YouCompleteMe nested submodules (declarative or not)**: the manager
   clones plugins non-recursively, so YCM's nested submodule

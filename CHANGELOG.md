@@ -7,12 +7,26 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- coc.nvim replaces YouCompleteMe as LSP engine: `plugin_coc.vim` declares
+  the extensions (`g:coc_global_extensions`: yaml, json, git, sh, docker,
+  toml, ansible, vimlsp), the generic `terraform-ls` server
+  (`g:coc_user_config`) and the LSP mappings (gd/gr/gi/K, [g/]g,
+  <leader>rn/ca/d/o). README: coc section, mappings table, YCM farewell
+
+### Removed
+
+- YouCompleteMe and neoinclude (YCM completion stack): no build step, no
+  nested submodule dance; the LSP route covers the devops servers YCM
+  never had
+
 ### Documentation
 
 - README known issue: YCM nested submodules are missing even with the
   declarative install (the `exec` hook runs `install.py` before
   `third_party/ycmd` exists) — explicit two-step fix documented with an
-  example.
+  example, now marked historical (YCM era)
 
 ### Added
 
