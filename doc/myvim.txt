@@ -1,0 +1,51 @@
+*myvim.txt*  Personal DevOps IDE configuration for Vim 8.2+
+
+Author: log0u7
+License: same as the myvim repository
+
+INTRODUCTION                                                    *myvim*
+
+MyVim is a personal configuration plugin: it ships the settings, mappings
+and per-plugin configuration of a DevOps IDE, while the plugins themselves
+are managed by vim-plugin-manager as Git submodules of `~/.vim`.
+
+STRUCTURE                                                *myvim-structure*
+
+The `plugin/` directory follows a naming convention:
+
+    vim_*.vim      Pure Vim configuration: options, mappings, colorscheme
+    plugin_*.vim   Per-plugin configuration (g: variables, autocmds)
+
+Files:
+    vim_settings.vim        General options (undo, swap, diff, commands)
+    vim_mappings.vim        Every global key mapping (single audit point)
+    vim_colorscheme.vim     Colorscheme selection mechanism
+    plugin_ale.vim          ALE linters for devops filetypes
+    plugin_gutentags.vim    ctags exclusions
+    plugin_<name>.vim       One file per configured plugin
+    ftplugin/yaml.vim       Filetype-specific settings (2-space indent)
+
+Essential settings that must run before plugins load (mapleader, encoding,
+filetype, syntax) stay in `~/.vim/vimrc`.
+
+MAPPINGS                                                *myvim-mappings*
+
+    <F2>            NERDTree toggle
+    <F3>            Plugin Manager sidebar
+    <F4>            Minimap toggle
+    <F7>            Undotree toggle
+    <F8>            Markdown Preview (markdown buffers)
+    <C-p>           CtrlP files (plugin default)
+    <leader>p       fzf Files
+    <leader>b       fzf Buffers
+    <leader>g       fzf Git files
+
+EXTENDING                                                *myvim-extend*
+
+Add a plugin: declare it in the `PluginBegin` block of `~/.vim/vimrc`, then
+create `plugin/plugin_<name>.vim` for its `g:` variables and autocmds, and
+add its key mappings to `vim_mappings.vim`. Filetype-specific settings go
+to `ftplugin/<filetype>.vim`. Regenerate help tags with
+`:PluginManager helptags` or `:helptags ALL`.
+
+vim:tw=78:ts=8:sts=8:sw=8:ft=help:norl:

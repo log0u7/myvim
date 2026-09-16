@@ -1,4 +1,4 @@
-" Markdown Preview
+" Plugin Markdown Preview
 " One-time install of the prebuilt preview assets (no npm needed):
 "   :call mkdp#util#install()
 let g:mkdp_auto_start = 0
@@ -7,7 +7,4 @@ let g:mkdp_auto_close = 1
 let g:mkdp_refresh_slow = 0
 let g:mkdp_command_for_global = 0
 let g:mkdp_open_to_the_world = 0
-
-autocmd FileType markdown nnoremap <buffer> <silent> <F8> :MarkdownPreview<CR>
-autocmd FileType markdown inoremap <buffer> <silent> <F8> :MarkdownPreview<CR>
-autocmd FileType yaml setlocal ts=2 sts=2 sw=2 expandtab
+" (<F8> mapping centralized in vim_mappings.vim)

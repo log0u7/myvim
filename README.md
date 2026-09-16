@@ -19,6 +19,20 @@ repository, managed by
 [vim-plugin-manager](https://github.com/log0u7/vim-plugin-manager) through
 Vim 8's native package system.
 
+## Layout and conventions
+
+```
+plugin/
+  vim_*.vim       pure Vim config: settings, mappings, colorscheme
+  plugin_*.vim    per-plugin config (g: variables, autocmds), one per plugin
+ftplugin/         filetype-specific settings (e.g. yaml.vim)
+doc/myvim.txt     :help myvim
+```
+
+Essential settings that must run before plugins load (mapleader, encoding,
+filetype, syntax) stay in `~/.vim/vimrc`. All key mappings are centralized
+in `plugin/vim_mappings.vim`. See `:help myvim` after generating helptags.
+
 > The full live example is a `~/.vim` git repository: base settings in
 > `~/.vim/vimrc` (symlinked to `~/.vimrc`), one plugin per submodule under
 > `pack/plugins/start/`, and MyVim declared last so its settings load after
