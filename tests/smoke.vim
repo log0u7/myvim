@@ -45,6 +45,7 @@ call s:check('tmux-navigator <C-h> mapping', maparg('<C-h>', 'n') =~# 'TmuxNavig
 call s:check('auto-pairs loaded', exists('g:AutoPairsFlyMode') || exists(':AutoPairsToggle') == 2)
 call s:check('vim-ai :AI command', exists(':AI') == 2)
 call s:check('coc.nvim loaded', exists(':CocInfo') == 2)
+call s:check('coc node binary present', filereadable(expand(g:coc_node_path)))
 call s:check('coc extensions declared', join(get(g:, 'coc_global_extensions', []), ',') =~# 'coc-yaml')
 
 qa!

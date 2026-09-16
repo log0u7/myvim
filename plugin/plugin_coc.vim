@@ -4,6 +4,12 @@
 " ALE coexistence: coc owns LSP, completion and diagnostics; ALE keeps the
 " devops linters (ale_disable_lsp=1 is set in plugin_ale.vim). Silence ALE
 " entirely if the dual gutter bothers you: let g:ale_enabled = 0
+"
+" Node runtime: coc needs node >= 20 (its bundle uses the RegExp v flag,
+" ES2024) while the system node stays at 18. The node 22 install managed by
+" mise is pinned here; bump the path after `mise install node@<newer>`.
+
+let g:coc_node_path = expand('~/.local/share/mise/installs/node/22.23.2/bin/node')
 
 let g:coc_global_extensions = [
       \   'coc-yaml',
