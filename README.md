@@ -89,12 +89,12 @@ installed automatically as a submodule.
 
 ```vim
 " essentials: must run before plugin/*.vim load
-set nocompatible
-filetype plugin indent on
 syn on
+filetype plugin indent on
+set nocompatible
 set encoding=UTF-8
 set background=dark
-" Mapleader: must be defined before plugins load (default '\', uncomment to change)
+" Mapleader must be defined before plugins load ! (default '\', uncomment to change)
 "let mapleader = "\"
 
 " Plugins managed by vim-plugin-manager (Git submodules + native packages)
