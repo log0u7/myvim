@@ -219,7 +219,7 @@ let g:gitlab_api_keys = {'gitlab.com': 'YOURTOKEN'}
 | `gd` / `K` / `<leader>d` / ... | coc.nvim LSP actions (see the coc.nvim section) |
 
 All mappings live in `plugin/vim_mappings.vim` (and
-`plugin/plugin_coc.vim` for the LSP ones) — edit there, not in the
+`plugin/plugin_coc.vim` for the LSP ones) - edit there, not in the
 `plugin_*.vim` files.
 
 ## Why a minimal vimrc
@@ -228,16 +228,16 @@ Vim sources `plugin/*.vim` files after the vimrc, in runtimepath order
 (alphabetical). Anything a plugin needs at load time must therefore exist
 before that phase: `mapleader` (or leader-based mappings bind the wrong
 key), `encoding`, and `filetype plugin indent on` stay in the vimrc.
-Everything else — options, mappings, per-plugin settings — lives in the
+Everything else (options, mappings, per-plugin settings) lives in the
 MyVim plugin, so the vimrc stays declarative: settings evolve in the plugin
 repo, plugin versions are pinned as submodules, and `~/.vim` remains a
 thin, reproducible list.
 
-## coc.nvim — LSP engine (YouCompleteMe retired)
+## coc.nvim: LSP engine (YouCompleteMe retired)
 
 After more than a decade of loyal service, YouCompleteMe was retired on
 2026-09-16 and replaced by [coc.nvim](https://github.com/neoclide/coc.nvim).
-Thank you, YCM — a decade of inline completion and semantic highlighting
+Thank you, YCM: a decade of inline completion and semantic highlighting
 carried this IDE through its Vim 8 years.
 
 Why the switch, for a DevOps/SRE stack:
@@ -268,12 +268,12 @@ coc mappings (added to the mappings table):
 | `<leader>d` | diagnostics list |
 | `<leader>o` | outline |
 
-## Known issues (historical — YCM era)
+## Known issues (historical: YCM era)
 
 - **YouCompleteMe nested submodules (declarative or not)**: the manager
   clones plugins non-recursively, so YCM's nested submodule
   (`third_party/ycmd`) is missing right after the declarative auto-install.
-  This is independent of the `exec` option — with
+  This is independent of the `exec` option: with
 
   ```vim
   Plugin 'ycm-core/YouCompleteMe', {'exec': './install.py --all'}
