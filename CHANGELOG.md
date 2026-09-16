@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.2.0] - 2026-09-16
+
 ### Added
 
 - coc.nvim replaces YouCompleteMe as LSP engine: `plugin_coc.vim` declares
@@ -14,12 +16,47 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   toml, ansible, vimlsp), the generic `terraform-ls` server
   (`g:coc_user_config`) and the LSP mappings (gd/gr/gi/K, [g/]g,
   <leader>rn/ca/d/o). README: coc section, mappings table, YCM farewell
+- `plugin_vimai.vim`: AI assistant via vim-ai, default backend is the LOCAL
+  ollama server (OpenAI-compatible endpoint `http://localhost:11434`, model
+  `qwen2.5-coder:1.5b`); any OpenAI-compatible provider works by changing
+  `endpoint_url`/`model`. Configured through `roles.ini` (supported
+  mechanism, no `g:vim_ai_*` dicts)
+- Node runtime pin: `g:coc_node_path` points coc at the mise node 22
+  install (coc needs node >= 20, RegExp `v` flag); the system node stays 18
+- `plugin/vim_aliases.vim`: command aliases (`W`, `Q`) moved out of
+  `vim_settings.vim` (vim_* convention: one module per concern)
+- `tests/smoke.vim` + `make smoke`: smoke suite against the live install
+  (22 checks: modules loaded, mappings wired, plugin commands present,
+  coc node binary pinned); exits non-zero on the first failure. Caught two
+  real issues on its first run (coc client crash on node 18, gutentags
+  buffer-local commands)
+- `Makefile` for the smoke target
+- README rebuilt (Diátaxis: Quickstart, How-to, Reference, Explanation):
+  badges (vim 8.2+, MIT, vim-plugin-manager), MIT LICENSE, complete module
+  layout table (vim_aliases, coc, vimai, roles.ini, tests, Makefile),
+  node runtime section, coc mappings table, YCM both-install-paths known
+  issue with the two-step fix
+- New optional plugins declared with `{'load': 'opt'}`: copilot.vim and
+  codeium.vim (installed under `pack/plugins/opt/`, loaded on demand)
+- vim-go pinned to v1.29
+
+### Changed
+
+- Sidebar width 40 -> 50 (`g:plugin_manager_sidebar_width` in
+  `plugin_pluginmanager.vim`)
+- `~/.vim/vimrc`: syntax first in the essentials block; quickstart snippet
+  in the README kept byte-identical to the live vimrc
 
 ### Removed
 
 - YouCompleteMe and neoinclude (YCM completion stack): no build step, no
   nested submodule dance; the LSP route covers the devops servers YCM
   never had
+
+### Fixed
+
+- `plugin_gutentags.vim`: `g:gutentags_exclude` was renamed
+  `g:gutentags_ctags_exclude` upstream (startup warning)
 
 ### Documentation
 
@@ -29,20 +66,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   paths (declarative vimrc with or without the `exec` hook, and
   `:PluginManager add`): explicit two-step fix documented with examples,
   now marked historical (YCM era)
-
-### Added
-
-- `plugin_vimai.vim`: AI assistant via vim-ai, default backend is the LOCAL
-  ollama server (OpenAI-compatible endpoint `http://localhost:11434`, model
-  `qwen2.5-coder:1.5b`); any OpenAI-compatible provider works by changing
-  `endpoint_url`/`model`
-- New optional plugins declared with `{'load': 'opt'}`: copilot.vim and
-  codeium.vim (installed under `pack/plugins/opt/`, loaded on demand)
-
-### Fixed
-
-- `plugin_gutentags.vim`: `g:gutentags_exclude` was renamed
-  `g:gutentags_ctags_exclude` upstream (startup warning)
+- Em dashes replaced with plain punctuation across README, CHANGELOG and
+  doc (house style: no U+2014)
 
 ## [0.1.0] - 2026-09-16
 
