@@ -263,7 +263,7 @@ older defaults (a distro node 18 for instance) crash the client at startup
 with `SyntaxError: Invalid flags supplied to RegExp constructor 'v'`.
 
 - **mise users**: install once (`mise install node@22`) and pin coc to it
-  without touching the system default — `plugin_coc.vim` already does:
+  without touching the system default: `plugin_coc.vim` already does:
 
   ```vim
   let g:coc_node_path = expand('~/.local/share/mise/installs/node/22.23.2/bin/node')
