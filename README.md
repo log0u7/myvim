@@ -234,10 +234,26 @@ thin, reproducible list.
 
 ## Known issues
 
-- **YouCompleteMe**: the manager clones plugins non-recursively, so YCM's
-  nested submodules (`third_party/ycmd`) are missing until you run
-  `git submodule update --init --recursive` inside the plugin directory
-  (see post-install table). Without it, `install.py` aborts.
+- **YouCompleteMe nested submodules (declarative or not)**: the manager
+  clones plugins non-recursively, so YCM's nested submodule
+  (`third_party/ycmd`) is missing right after the declarative auto-install.
+  This is independent of the `exec` option — with
+
+  ```vim
+  Plugin 'ycm-core/YouCompleteMe', {'exec': './install.py --all'}
+  ```
+
+  the `exec` hook runs `install.py` while `third_party/ycmd` is still
+  absent, so the build fails (see the manager log, `COMMAND_FAILED`). Fix:
+  initialize the nested submodules first, then build:
+
+  ```bash
+  git -C pack/plugins/start/YouCompleteMe submodule update --init --recursive
+  python3 pack/plugins/start/YouCompleteMe/install.py --all
+  ```
+
+  (see post-install table). Without the recursive init, `install.py`
+  aborts with missing `third_party/ycmd`.
 
 ## Legacy
 

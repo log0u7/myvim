@@ -7,6 +7,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Documentation
+
+- README known issue: YCM nested submodules are missing even with the
+  declarative install (the `exec` hook runs `install.py` before
+  `third_party/ycmd` exists) — explicit two-step fix documented with an
+  example.
+
 ### Added
 
 - `plugin_vimai.vim`: AI assistant via vim-ai, default backend is the LOCAL
