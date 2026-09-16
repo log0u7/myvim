@@ -1,5 +1,9 @@
 # MyVim
 
+[![Vim](https://img.shields.io/badge/vim-8.2%2B-blueviolet)](https://www.vim.org/)
+[![License: MIT](https://img.shields.io/badge/license-MIT-green.svg)](LICENSE)
+[![Plugin manager](https://img.shields.io/badge/managed%20by-vim--plugin--manager-orange)](https://github.com/log0u7/vim-plugin-manager)
+
 ```
   __
  (`/\
@@ -23,26 +27,6 @@ Vim 8's native package system.
 > `~/.vim/vimrc` (symlinked to `~/.vimrc`), one plugin per submodule under
 > `pack/plugins/start/`, and MyVim declared last so its settings load after
 > every plugin. In-editor documentation: `:help myvim`.
-
-## Layout and conventions
-
-```
-plugin/
-  vim_*.vim       pure Vim config: settings, mappings, colorscheme
-  plugin_*.vim    per-plugin config (g: variables, autocmds), one per plugin
-ftplugin/         filetype-specific settings (e.g. yaml.vim)
-doc/myvim.txt     :help myvim
-```
-
-| File | Role |
-|---|---|
-| `plugin/vim_settings.vim` | General options (undo, swap, diff, `W`/`Q` commands) |
-| `plugin/vim_mappings.vim` | Every global key mapping (single audit point) |
-| `plugin/vim_colorscheme.vim` | Colorscheme activation mechanism |
-| `plugin/plugin_ale.vim` | ALE linters for devops filetypes |
-| `plugin/plugin_gutentags.vim` | ctags exclusions |
-| `plugin/plugin_<name>.vim` | One file per configured plugin |
-| `ftplugin/yaml.vim` | Filetype settings (2-space indent) |
 
 ## Quickstart
 
@@ -148,7 +132,11 @@ PluginBegin
   Plugin 'jvirtanen/vim-hcl'
   Plugin 'Glench/Vim-Jinja2-Syntax'
   Plugin 'jmcantrell/vim-virtualenv'
-  Plugin 'fatih/vim-go', {'tag': 'v1.28'}
+  Plugin 'fatih/vim-go', {'tag': 'v1.29'}
+  " --- ai (local ollama via OpenAI-compatible API; optional: copilot, codeium) ---
+  Plugin 'madox2/vim-ai'
+  Plugin 'github/copilot.vim', {'load': 'opt'}
+  Plugin 'Exafunction/codeium.vim', {'load': 'opt'}
   " --- docs / notes ---
   Plugin 'iamcco/markdown-preview.nvim'
   Plugin 'vimwiki/vimwiki'
@@ -178,6 +166,7 @@ back the setup up (`:PluginManager backup` once a remote exists).
 | Plugin | Action |
 |---|---|
 | coc.nvim | Nothing to build: declared extensions (`g:coc_global_extensions` in `plugin_coc.vim`) auto-install at first start. Generic LSP servers (terraform-ls) are configured in the same file and need their binary in PATH |
+| YouCompleteMe (retired) | See [Known issues](#known-issues-historical-ycm-era): the manager clones plugins non-recursively, so YCM needed a manual `submodule update --init --recursive` before `install.py --all` |
 | markdown-preview.nvim | Run `:call mkdp#util#install()` once (downloads prebuilt assets, no npm needed) |
 | fzf | Nothing to do: `{'dir': 'fzf', 'exec': './install --all'}` installs the binary |
 
@@ -205,6 +194,40 @@ plugin/*-secrets.vim
 let g:gitlab_api_keys = {'gitlab.com': 'YOURTOKEN'}
 ```
 
+## Layout and conventions
+
+```
+plugin/
+  vim_*.vim       pure Vim config: settings, mappings, aliases, colorscheme
+  plugin_*.vim    per-plugin config (g: variables, autocmds), one per plugin
+ftplugin/         filetype-specific settings (e.g. yaml.vim)
+doc/myvim.txt     :help myvim
+tests/smoke.vim   smoke suite against the live install (make smoke)
+roles.ini         vim-ai roles (default backend: local ollama)
+Makefile          make smoke
+```
+
+| Module | Role |
+|---|---|
+| `plugin/vim_settings.vim` | General options (undo, swap, diff) |
+| `plugin/vim_aliases.vim` | Command aliases (`W`, `Q`) |
+| `plugin/vim_mappings.vim` | Every global key mapping (single audit point) |
+| `plugin/vim_colorscheme.vim` | Colorscheme activation mechanism |
+| `plugin/plugin_coc.vim` | coc.nvim LSP: extensions, generic servers, mappings, node runtime pin |
+| `plugin/plugin_vimai.vim` | vim-ai AI assistant (local ollama endpoint) |
+| `plugin/plugin_ale.vim` | ALE linters for devops filetypes |
+| `plugin/plugin_gutentags.vim` | ctags exclusions |
+| `plugin/plugin_fugitive.vim` | GitLab domains + secrets-file pointer |
+| `plugin/plugin_nerdtree.vim` | NERDTree options and autocmds |
+| `plugin/plugin_markdownpreview.vim` | markdown-preview options |
+| `plugin/plugin_<name>.vim` | One file per configured plugin |
+| `ftplugin/yaml.vim` | Filetype settings (2-space indent) |
+
+Essential settings that must run before plugins load (mapleader, encoding,
+filetype, syntax) stay in `~/.vim/vimrc`. All key mappings are centralized
+in `plugin/vim_mappings.vim` (and `plugin/plugin_coc.vim` for the LSP ones).
+See `:help myvim` after generating helptags.
+
 ## Key mappings
 
 | Key | Action |
@@ -216,11 +239,21 @@ let g:gitlab_api_keys = {'gitlab.com': 'YOURTOKEN'}
 | `<F8>` | Markdown Preview (markdown buffers) |
 | `<C-p>` | CtrlP files |
 | `<leader>p` / `<leader>b` / `<leader>g` | fzf Files / Buffers / Git files |
-| `gd` / `K` / `<leader>d` / ... | coc.nvim LSP actions (see the coc.nvim section) |
+| `gd` / `gr` / `gi` / `K` | coc.nvim: definition / references / implementation / hover |
+| `[g` / `]g` | coc.nvim: previous / next diagnostic |
+| `<leader>rn` / `<leader>ca` | coc.nvim: rename / code action |
+| `<leader>d` / `<leader>o` | coc.nvim: diagnostics list / outline |
 
-All mappings live in `plugin/vim_mappings.vim` (and
-`plugin/plugin_coc.vim` for the LSP ones) - edit there, not in the
-`plugin_*.vim` files.
+## Tests
+
+The configuration is smoke-tested against a live install:
+
+```bash
+make smoke    # run from the myvim repository
+```
+
+Exits non-zero on the first failure. It asserts that every configured
+module is loaded, every mapping is wired, and every plugin command exists.
 
 ## Why a minimal vimrc
 
@@ -228,7 +261,7 @@ Vim sources `plugin/*.vim` files after the vimrc, in runtimepath order
 (alphabetical). Anything a plugin needs at load time must therefore exist
 before that phase: `mapleader` (or leader-based mappings bind the wrong
 key), `encoding`, and `filetype plugin indent on` stay in the vimrc.
-Everything else (options, mappings, per-plugin settings) lives in the
+Everything else - options, mappings, per-plugin settings - lives in the
 MyVim plugin, so the vimrc stays declarative: settings evolve in the plugin
 repo, plugin versions are pinned as submodules, and `~/.vim` remains a
 thin, reproducible list.
@@ -248,13 +281,6 @@ Why the switch, for a DevOps/SRE stack:
 | DevOps servers | none | ansible-language-server, yaml-ls, bash-ls, dockerfile-ls, terraform-ls... |
 | Build step | `install.py --all` + nested submodules | none (extensions auto-install) |
 | Project health | maintenance mode | active ecosystem |
-
-Configuration lives in `plugin/plugin_coc.vim`: the extension list
-(`g:coc_global_extensions`: yaml, json, git, sh, docker, toml, ansible,
-vimlsp), the generic `terraform-ls` server (needs `terraform-ls` in PATH),
-and the mappings below. ALE keeps the devops linters with LSP disabled
-(`ale_disable_lsp=1`); set `let g:ale_enabled = 0` if you prefer coc-only
-diagnostics.
 
 ### Node runtime (coc needs node >= 20)
 
@@ -276,18 +302,6 @@ with `SyntaxError: Invalid flags supplied to RegExp constructor 'v'`.
   configure (`g:coc_node_path` unset means coc uses `node` from `PATH`).
 
 The smoke suite (`make smoke`) checks that the pinned binary is present.
-
-coc mappings (added to the mappings table):
-
-| Key | Action |
-|---|---|
-| `gd` / `gr` / `gi` | definition / references / implementation |
-| `K` | hover documentation |
-| `[g` / `]g` | previous / next diagnostic |
-| `<leader>rn` | rename symbol |
-| `<leader>ca` | code action |
-| `<leader>d` | diagnostics list |
-| `<leader>o` | outline |
 
 ## Known issues (historical: YCM era)
 
@@ -328,3 +342,7 @@ coc mappings (added to the mappings table):
 
 The old layout (whole config + 41 plugins as nested submodules in this repo)
 is preserved at tag [`legacy-full-config`](https://github.com/log0u7/myvim/tree/legacy-full-config).
+
+## License
+
+[MIT](LICENSE)
