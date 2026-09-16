@@ -23,6 +23,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Documentation
 
+- README + doc: node runtime section for coc (needs node >= 20; mise users
+  pin a managed node via `g:coc_node_path`, the system default stays free)
 - README known issue: YCM nested submodules are missing for BOTH install
   paths (declarative vimrc with or without the `exec` hook, and
   `:PluginManager add`): explicit two-step fix documented with examples,

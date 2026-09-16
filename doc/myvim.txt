@@ -43,6 +43,15 @@ LSP mappings: `gd` definition, `gr` references, `gi` implementation,
 `K` hover, `[g`/`]g` diagnostic navigation, `<leader>rn` rename,
 `<leader>ca` code action, `<leader>d` diagnostics, `<leader>o` outline.
 
+NODE RUNTIME                                            *myvim-coc-node*
+
+coc requires node >= 20 (RegExp `v` flag in its bundle): a distro node 18
+crashes the client at startup. mise users pin coc to a managed node with
+`g:coc_node_path` (already set in plugin_coc.vim to the mise node 22
+install; bump the path after a node upgrade) while keeping the system
+default untouched. Without the pin, coc uses `node` from PATH, so a node
+>= 20 there works with no configuration.
+
 AI ASSISTANT                                            *myvim-ai*
 
 `plugin_vimai.vim` wires vim-ai to the LOCAL ollama server

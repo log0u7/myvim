@@ -256,6 +256,27 @@ and the mappings below. ALE keeps the devops linters with LSP disabled
 (`ale_disable_lsp=1`); set `let g:ale_enabled = 0` if you prefer coc-only
 diagnostics.
 
+### Node runtime (coc needs node >= 20)
+
+coc's bundle uses the RegExp `v` flag (ES2024): any node **>= 20** works,
+older defaults (a distro node 18 for instance) crash the client at startup
+with `SyntaxError: Invalid flags supplied to RegExp constructor 'v'`.
+
+- **mise users**: install once (`mise install node@22`) and pin coc to it
+  without touching the system default — `plugin_coc.vim` already does:
+
+  ```vim
+  let g:coc_node_path = expand('~/.local/share/mise/installs/node/22.23.2/bin/node')
+  ```
+
+  Bump the path after `mise install node@<newer>`. The rest of the system
+  keeps its own node (18 here).
+
+- **Everyone else**: put a node >= 20 binary in `PATH`, nothing to
+  configure (`g:coc_node_path` unset means coc uses `node` from `PATH`).
+
+The smoke suite (`make smoke`) checks that the pinned binary is present.
+
 coc mappings (added to the mappings table):
 
 | Key | Action |
