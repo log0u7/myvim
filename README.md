@@ -19,6 +19,11 @@ repository, managed by
 [vim-plugin-manager](https://github.com/log0u7/vim-plugin-manager) through
 Vim 8's native package system.
 
+> The full live example is a `~/.vim` git repository: base settings in
+> `~/.vim/vimrc` (symlinked to `~/.vimrc`), one plugin per submodule under
+> `pack/plugins/start/`, and MyVim declared last so its settings load after
+> every plugin. In-editor documentation: `:help myvim`.
+
 ## Layout and conventions
 
 ```
@@ -29,14 +34,15 @@ ftplugin/         filetype-specific settings (e.g. yaml.vim)
 doc/myvim.txt     :help myvim
 ```
 
-Essential settings that must run before plugins load (mapleader, encoding,
-filetype, syntax) stay in `~/.vim/vimrc`. All key mappings are centralized
-in `plugin/vim_mappings.vim`. See `:help myvim` after generating helptags.
-
-> The full live example is a `~/.vim` git repository: base settings in
-> `~/.vim/vimrc` (symlinked to `~/.vimrc`), one plugin per submodule under
-> `pack/plugins/start/`, and MyVim declared last so its settings load after
-> every plugin.
+| File | Role |
+|---|---|
+| `plugin/vim_settings.vim` | General options (undo, swap, diff, `W`/`Q` commands) |
+| `plugin/vim_mappings.vim` | Every global key mapping (single audit point) |
+| `plugin/vim_colorscheme.vim` | Colorscheme activation mechanism |
+| `plugin/plugin_ale.vim` | ALE linters for devops filetypes |
+| `plugin/plugin_gutentags.vim` | ctags exclusions |
+| `plugin/plugin_<name>.vim` | One file per configured plugin |
+| `ftplugin/yaml.vim` | Filetype settings (2-space indent) |
 
 ## Quickstart
 
@@ -77,42 +83,19 @@ vim -c "helptags ~/.vim/pack/plugins/start/vim-plugin-manager/doc" -c q
 
 ### 4. Write ~/.vim/vimrc
 
-Base settings, then the plugin manager and the declarative plugin list. On
-startup, every missing plugin is installed automatically as a submodule.
+Only what must run before plugins load stays in the vimrc; the general
+settings and mappings come from MyVim. On startup, every missing plugin is
+installed automatically as a submodule.
 
 ```vim
-syn on
-filetype plugin indent on
-"colorscheme solarized
-
-set nu
-set nopaste
-set background=dark
-set encoding=UTF-8
-set hlsearch
+" essentials: must run before plugin/*.vim load
 set nocompatible
-set laststatus=2
-
-"set t_Co=256
-"let g:solarized_termcolors=256
-
-" Swapfile Dir
-set directory^=$HOME/.vim/swapdir/
-
-" Peristent Undo
-set undodir=~/.vim/undodir
-set undofile
-
-" Set diff algo to patience and indent heuristic
-set diffopt+=algorithm:patience,indent-heuristic
-
-" Mapleader (nmap<leader>w :w!<cr>)
+filetype plugin indent on
+syn on
+set encoding=UTF-8
+set background=dark
+" Mapleader: must be defined before plugins load (default '\', uncomment to change)
 "let mapleader = "\"
-"let g:mapleader = "\"
-
-" Command alias
-command W w !sudo tee > /dev/null %
-command Q qa!
 
 " Plugins managed by vim-plugin-manager (Git submodules + native packages)
 packadd vim-plugin-manager
@@ -128,6 +111,9 @@ PluginBegin
   Plugin 'wincent/terminus'
   Plugin 'ryanoasis/vim-devicons'
   Plugin 'Yggdroot/indentLine'
+  Plugin 'jiangmiao/auto-pairs'
+  Plugin 'ludovicchabant/vim-gutentags'
+  Plugin 'christoomey/vim-tmux-navigator'
   " --- navigation / IDE panels ---
   Plugin 'preservim/nerdtree'
   Plugin 'Xuyuanp/nerdtree-git-plugin'
@@ -196,6 +182,16 @@ back the setup up (`:PluginManager backup` once a remote exists).
 | markdown-preview.nvim | Run `:call mkdp#util#install()` once (downloads prebuilt assets, no npm needed) |
 | fzf | Nothing to do: `{'dir': 'fzf', 'exec': './install --all'}` installs the binary |
 
+## Enable a colorscheme
+
+No colorscheme is forced by default (the terminal palette applies). To
+activate one:
+
+1. Uncomment its `Plugin` line in `~/.vim/vimrc`
+   (solarized / gruvbox8 / tokyonight / onedark).
+2. Uncomment the matching call in `plugin/vim_colorscheme.vim`.
+3. Restart vim.
+
 ## Secrets
 
 Never commit API tokens. Keep them in a gitignored file:
@@ -221,6 +217,20 @@ let g:gitlab_api_keys = {'gitlab.com': 'YOURTOKEN'}
 | `<F8>` | Markdown Preview (markdown buffers) |
 | `<C-p>` | CtrlP files |
 | `<leader>p` / `<leader>b` / `<leader>g` | fzf Files / Buffers / Git files |
+
+All mappings live in `plugin/vim_mappings.vim` — edit there, not in the
+`plugin_*.vim` files.
+
+## Why a minimal vimrc
+
+Vim sources `plugin/*.vim` files after the vimrc, in runtimepath order
+(alphabetical). Anything a plugin needs at load time must therefore exist
+before that phase: `mapleader` (or leader-based mappings bind the wrong
+key), `encoding`, and `filetype plugin indent on` stay in the vimrc.
+Everything else — options, mappings, per-plugin settings — lives in the
+MyVim plugin, so the vimrc stays declarative: settings evolve in the plugin
+repo, plugin versions are pinned as submodules, and `~/.vim` remains a
+thin, reproducible list.
 
 ## Known issues
 
