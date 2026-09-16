@@ -17,6 +17,4 @@ set undofile
 " Set diff algo to patience and indent heuristic
 set diffopt+=algorithm:patience,indent-heuristic
 
-" Command alias
-command W w !sudo tee > /dev/null %
-command Q qa!
+" Command aliases live in vim_aliases.vim
