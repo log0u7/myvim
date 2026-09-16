@@ -7,6 +7,20 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- `plugin_vimai.vim`: AI assistant via vim-ai, default backend is the LOCAL
+  ollama server (OpenAI-compatible endpoint `http://localhost:11434`, model
+  `qwen2.5-coder:1.5b`); any OpenAI-compatible provider works by changing
+  `endpoint_url`/`model`
+- New optional plugins declared with `{'load': 'opt'}`: copilot.vim and
+  codeium.vim (installed under `pack/plugins/opt/`, loaded on demand)
+
+### Fixed
+
+- `plugin_gutentags.vim`: `g:gutentags_exclude` was renamed
+  `g:gutentags_ctags_exclude` upstream (startup warning)
+
 ## [0.1.0] - 2026-09-16
 
 ### Added
