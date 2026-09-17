@@ -17,12 +17,13 @@ The `plugin/` directory follows a naming convention:
     plugin_*.vim   Per-plugin configuration (g: variables, autocmds)
 
 Files:
-    vim_settings.vim        General options (undo, swap, diff, commands)
-    vim_aliases.vim         Command aliases (`W` sudo-write, `Q` quit-all)
+    vim_settings.vim        General options (undo, swap, diff; dirs auto-created)
+    vim_aliases.vim         Command aliases (`W` -> eunuch `:SudoWrite`, `Q` quit-all)
     vim_mappings.vim        Every global key mapping (single audit point)
     vim_colorscheme.vim     Colorscheme selection mechanism
     plugin_pluginmanager.vim  vim-plugin-manager: vimrc path, sidebar width
-    plugin_coc.vim          coc.nvim LSP: extensions, generic servers, mappings
+    plugin_coc.vim          coc.nvim LSP: extensions, generic servers, mappings,
+                            node runtime resolution (mise)
     plugin_vimai.vim        vim-ai AI assistant (local ollama endpoint)
     plugin_ale.vim          ALE linters for devops filetypes
     plugin_gutentags.vim    ctags exclusions
@@ -37,9 +38,10 @@ COC.NVIM (LSP)                                          *myvim-coc*
 YouCompleteMe was retired on 2026-09-16; coc.nvim provides generic LSP.
 Extensions are declared in `plugin/plugin_coc.vim` via
 `g:coc_global_extensions` (yaml, json, git, sh, docker, toml, ansible,
-vimlsp) and auto-install at startup. Generic servers (terraform-ls) are
-configured through `g:coc_user_config`. ALE stays in charge of the devops
-linters with `ale_disable_lsp=1`.
+snippets, vimlsp) and auto-install at startup (coc-snippets bridges the
+UltiSnips/vim-snippets snippets into the coc completion). Generic servers
+(terraform-ls) are configured through `g:coc_user_config`. ALE stays in
+charge of the devops linters with `ale_disable_lsp=1`.
 
 LSP mappings: `gd` definition, `gr` references, `gi` implementation,
 `K` hover, `[g`/`]g` diagnostic navigation, `<leader>rn` rename,
@@ -48,11 +50,12 @@ LSP mappings: `gd` definition, `gr` references, `gi` implementation,
 NODE RUNTIME                                            *myvim-coc-node*
 
 coc requires node >= 20 (RegExp `v` flag in its bundle): a distro node 18
-crashes the client at startup. mise users pin coc to a managed node with
-`g:coc_node_path` (already set in plugin_coc.vim to the mise node 22
-install; bump the path after a node upgrade) while keeping the system
-default untouched. Without the pin, coc uses `node` from PATH, so a node
->= 20 there works with no configuration.
+crashes the client at startup. `plugin_coc.vim` resolves the node managed
+by mise at startup (`mise where node`, default install) when the resolved
+version is >= 20, while keeping the system default untouched. An explicit
+`g:coc_node_path` in `~/.vim/vimrc` wins over the resolution. Without mise,
+coc uses `node` from PATH, so a node >= 20 there works with no
+configuration.
 
 AI ASSISTANT                                            *myvim-ai*
 
@@ -65,17 +68,16 @@ MAPPINGS                                                *myvim-mappings*
 
     <F2>            NERDTree toggle
     <F3>            Plugin Manager sidebar
-    <F4>            Minimap toggle
     <F7>            Undotree toggle
     <F8>            Markdown Preview (markdown buffers)
-    <C-p>           CtrlP files (plugin default)
+    <C-p>           fzf Files
     <leader>p       fzf Files
     <leader>b       fzf Buffers
     <leader>g       fzf Git files
 
 Command mappings execute through `<Cmd>` (mode-independent, no jumplist
-or search-history pollution). The `W` and `Q` command aliases are in
-`vim_aliases.vim`.
+or search-history pollution). The `W` (delegates to the vim-eunuch
+`:SudoWrite`) and `Q` command aliases are in `vim_aliases.vim`.
 
 EXTENDING                                                *myvim-extend*
 
