@@ -9,6 +9,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 
+- Fugitive placeholder hostname typo (`gilab` -> `gitlab`, inert example
+  for a future private instance; gitlab.com itself needs no config)
 - Insert-mode `<F8>` typed `:MarkdownPreview<CR>` as text instead of
   running the command (`<Cmd>` fix)
 - Smoke suite aborted with E121 instead of failing cleanly when
