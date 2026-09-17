@@ -7,6 +7,39 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed
+
+- Insert-mode `<F8>` typed `:MarkdownPreview<CR>` as text instead of
+  running the command (`<Cmd>` fix)
+- Smoke suite aborted with E121 instead of failing cleanly when
+  `g:coc_node_path` is unset
+- CtrlP/NERDTree ignore patterns: unescaped `.swp` matched any `Xswp`
+- `command W/Q` raised E174 on re-source (missing `command!` bang)
+- Dead NERDTree exit autocmd removed (strict subset of the tab-close
+  autocmd; the only-tab case still exits Vim, verified empirically)
+
+### Changed
+
+- Mappings sweep: non-recursive `nnoremap` + `<Cmd>` execution
+  (vim_mappings.vim, plugin_coc.vim), `<silent>` made consistent
+- Autocmds wrapped in augroups (myvim_mappings, myvim_nerdtree)
+- ftplugin/yaml.vim: standard `b:did_ftplugin` guard + `b:undo_ftplugin`
+- Swapfiles get unique names (`directory` trailing `//`), obsolete
+  `set nopaste` dropped, `set number` spelling, `$HOME` -> `~` idiom
+- Comment style unified (`" Plugin X` headers, spaces before trailing
+  comments), 3x duplicated mapping-pointer comments removed
+
+### Tests
+
+- Smoke suite: 7 new checks (W/Q aliases, coc `gd`/`K` mappings, markdown
+  F8 autocmd, roles.ini readable, manager vimrc path, help file + tags)
+
+### Documentation
+
+- doc/myvim.txt: structure list completed (vim_aliases.vim,
+  plugin_pluginmanager.vim), `<Cmd>` mapping style documented
+- CHANGELOG [0.2.0]: smoke check count corrected (22 -> 24, as released)
+
 ## [0.2.0] - 2026-09-16
 
 ### Added
@@ -26,7 +59,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - `plugin/vim_aliases.vim`: command aliases (`W`, `Q`) moved out of
   `vim_settings.vim` (vim_* convention: one module per concern)
 - `tests/smoke.vim` + `make smoke`: smoke suite against the live install
-  (22 checks: modules loaded, mappings wired, plugin commands present,
+  (24 checks: modules loaded, mappings wired, plugin commands present,
   coc node binary pinned); exits non-zero on the first failure. Caught two
   real issues on its first run (coc client crash on node 18, gutentags
   buffer-local commands)

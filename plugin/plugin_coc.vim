@@ -36,13 +36,14 @@ let g:coc_user_config = {
       \ }
 
 " Diagnostics navigation and LSP actions
-nmap <silent> gd <Plug>(coc-definition)
-nmap <silent> gr <Plug>(coc-references)
-nmap <silent> gi <Plug>(coc-implementation)
-nmap <silent> K :call CocActionAsync('doHover')<CR>
-nmap <silent> [g <Plug>(coc-diagnostic-prev)
-nmap <silent> ]g <Plug>(coc-diagnostic-next)
-nmap <leader>rn <Plug>(coc-rename)
-nmap <leader>ca <Plug>(coc-codeaction-cursor)
-nnoremap <silent> <leader>d :CocList diagnostics<CR>
-nnoremap <silent> <leader>o :CocList outline<CR>
+" (nnoremap + <Cmd>: non-recursive, no jumplist/search-history pollution)
+nnoremap <silent> gd <Plug>(coc-definition)
+nnoremap <silent> gr <Plug>(coc-references)
+nnoremap <silent> gi <Plug>(coc-implementation)
+nnoremap <silent> K <Cmd>call CocActionAsync('doHover')<CR>
+nnoremap <silent> [g <Plug>(coc-diagnostic-prev)
+nnoremap <silent> ]g <Plug>(coc-diagnostic-next)
+nnoremap <silent> <leader>rn <Plug>(coc-rename)
+nnoremap <silent> <leader>ca <Plug>(coc-codeaction-cursor)
+nnoremap <silent> <leader>d <Cmd>CocList diagnostics<CR>
+nnoremap <silent> <leader>o <Cmd>CocList outline<CR>

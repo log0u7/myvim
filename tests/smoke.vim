@@ -48,4 +48,13 @@ call s:check('coc.nvim loaded', exists(':CocInfo') == 2)
 call s:check('coc node binary present', filereadable(expand(g:coc_node_path)))
 call s:check('coc extensions declared', join(get(g:, 'coc_global_extensions', []), ',') =~# 'coc-yaml')
 
+" aliases, doc and remaining wiring
+call s:check('aliases W and Q', exists(':W') == 2 && exists(':Q') == 2)
+call s:check('coc gd mapping', maparg('gd', 'n') =~# 'coc-definition')
+call s:check('coc K hover mapping', maparg('K', 'n') =~# 'doHover')
+call s:check('markdown F8 autocmd registered', exists('#FileType#markdown') == 1)
+call s:check('vim-ai roles.ini readable', filereadable(g:vim_ai_roles_config_file))
+call s:check('manager vimrc path configured', exists('g:plugin_manager_vimrc_path'))
+call s:check('help file + tags present', filereadable(expand('~/.vim/pack/plugins/start/myvim/doc/myvim.txt')) && filereadable(expand('~/.vim/pack/plugins/start/myvim/doc/tags')))
+
 qa!

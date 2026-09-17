@@ -18,8 +18,10 @@ The `plugin/` directory follows a naming convention:
 
 Files:
     vim_settings.vim        General options (undo, swap, diff, commands)
+    vim_aliases.vim         Command aliases (`W` sudo-write, `Q` quit-all)
     vim_mappings.vim        Every global key mapping (single audit point)
     vim_colorscheme.vim     Colorscheme selection mechanism
+    plugin_pluginmanager.vim  vim-plugin-manager: vimrc path, sidebar width
     plugin_coc.vim          coc.nvim LSP: extensions, generic servers, mappings
     plugin_vimai.vim        vim-ai AI assistant (local ollama endpoint)
     plugin_ale.vim          ALE linters for devops filetypes
@@ -70,6 +72,10 @@ MAPPINGS                                                *myvim-mappings*
     <leader>p       fzf Files
     <leader>b       fzf Buffers
     <leader>g       fzf Git files
+
+Command mappings execute through `<Cmd>` (mode-independent, no jumplist
+or search-history pollution). The `W` and `Q` command aliases are in
+`vim_aliases.vim`.
 
 EXTENDING                                                *myvim-extend*
 

@@ -2,13 +2,12 @@
 " (loaded from the myvim plugin; essentials that MUST run before plugins
 " stay in ~/.vim/vimrc)
 
-set nu
-set nopaste
+set number
 set hlsearch
 set laststatus=2
 
-" Swapfile Dir
-set directory^=$HOME/.vim/swapdir/
+" Swapfile Dir (trailing // = unique names, no basename collisions)
+set directory^=~/.vim/swapdir//
 
 " Persistent Undo
 set undodir=~/.vim/undodir
