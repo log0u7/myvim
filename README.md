@@ -42,7 +42,6 @@ cp ~/.vimrc ~/.vimrc~
 ```bash
 cd ~/.vim
 git init
-mkdir -p swapdir undodir
 cat > .gitignore <<'EOF'
 undodir/*
 swapdir/*
@@ -79,7 +78,7 @@ set nocompatible
 set encoding=UTF-8
 set background=dark
 " Mapleader must be defined before plugins load ! (default '\', uncomment to change)
-"let mapleader = "\"
+"let mapleader = '\'
 
 " Plugins managed by vim-plugin-manager (Git submodules + native packages)
 packadd vim-plugin-manager
@@ -90,12 +89,10 @@ PluginBegin
   Plugin 'chrisbra/matchit'
   Plugin 'vim-airline/vim-airline'
   Plugin 'vim-airline/vim-airline-themes'
-  Plugin 'bling/vim-bufferline'
   Plugin 'edkolev/tmuxline.vim'
   Plugin 'wincent/terminus'
   Plugin 'ryanoasis/vim-devicons'
   Plugin 'Yggdroot/indentLine'
-  Plugin 'jiangmiao/auto-pairs'
   Plugin 'ludovicchabant/vim-gutentags'
   Plugin 'christoomey/vim-tmux-navigator'
   " --- navigation / IDE panels ---
@@ -103,12 +100,10 @@ PluginBegin
   Plugin 'Xuyuanp/nerdtree-git-plugin'
   Plugin 'tiagofumo/vim-nerdtree-syntax-highlight'
   Plugin 'preservim/tagbar'
-  Plugin 'ctrlpvim/ctrlp.vim'
   Plugin 'junegunn/fzf', {'dir': 'fzf', 'exec': './install --all'}
   Plugin 'junegunn/fzf.vim'
   Plugin 'jlanzarotta/bufexplorer'
   Plugin 'mbbill/undotree'
-  Plugin 'severin-lemaignan/vim-minimap'
   " --- completion / LSP (coc.nvim replaced YouCompleteMe) ---
   Plugin 'neoclide/coc.nvim', {'branch': 'release'}
   Plugin 'honza/vim-snippets'
@@ -126,13 +121,11 @@ PluginBegin
   Plugin 'vim-vdebug/vdebug'
   " --- devops syntax ---
   Plugin 'pearofducks/ansible-vim'
-  Plugin 'ekalinin/Dockerfile.vim'
   Plugin 'saltstack/salt-vim'
   Plugin 'hashivim/vim-hashicorp-tools'
   Plugin 'jvirtanen/vim-hcl'
   Plugin 'Glench/Vim-Jinja2-Syntax'
-  Plugin 'jmcantrell/vim-virtualenv'
-  Plugin 'fatih/vim-go', {'tag': 'v1.29'}
+  Plugin 'fatih/vim-go'
   " --- ai (local ollama via OpenAI-compatible API; optional: copilot, codeium) ---
   Plugin 'madox2/vim-ai'
   Plugin 'github/copilot.vim', {'load': 'opt'}
@@ -159,7 +152,9 @@ vim
 
 vim-plugin-manager reads the `PluginBegin` block and installs every missing
 plugin as a submodule, then commits the changes. Commit and push `~/.vim` to
-back the setup up (`:PluginManager backup` once a remote exists).
+back the setup up (`:PluginManager backup` once a remote exists). The
+`swapdir/` and `undodir/` directories are created automatically (mode 0700)
+by MyVim at first start; only their `.gitignore` entries are needed.
 
 ## Post-install steps
 
@@ -172,8 +167,9 @@ back the setup up (`:PluginManager backup` once a remote exists).
 
 ## Enable a colorscheme
 
-No colorscheme is forced by default (the terminal palette applies). To
-activate one:
+No colorscheme is forced by default (the terminal palette applies).
+Truecolor terminals get 24-bit colors automatically (`termguicolors` is set
+when `$COLORTERM` announces truecolor support). To activate one:
 
 1. Uncomment its `Plugin` line in `~/.vim/vimrc`
    (solarized / gruvbox8 / tokyonight / onedark).
@@ -210,10 +206,10 @@ Makefile          make smoke
 | Module | Role |
 |---|---|
 | `plugin/vim_settings.vim` | General options (undo, swap, diff) |
-| `plugin/vim_aliases.vim` | Command aliases (`W`, `Q`) |
+| `plugin/vim_aliases.vim` | Command aliases (`W` delegates to `:SudoWrite`, `Q`) |
 | `plugin/vim_mappings.vim` | Every global key mapping (single audit point) |
 | `plugin/vim_colorscheme.vim` | Colorscheme activation mechanism |
-| `plugin/plugin_coc.vim` | coc.nvim LSP: extensions, generic servers, mappings, node runtime pin |
+| `plugin/plugin_coc.vim` | coc.nvim LSP: extensions, generic servers, mappings, node runtime resolution (mise) |
 | `plugin/plugin_vimai.vim` | vim-ai AI assistant (local ollama endpoint) |
 | `plugin/plugin_ale.vim` | ALE linters for devops filetypes |
 | `plugin/plugin_gutentags.vim` | ctags exclusions |
@@ -234,10 +230,9 @@ See `:help myvim` after generating helptags.
 |---|---|
 | `<F2>` | NERDTree toggle |
 | `<F3>` | Plugin Manager sidebar |
-| `<F4>` | Minimap toggle |
 | `<F7>` | Undotree toggle |
 | `<F8>` | Markdown Preview (markdown buffers) |
-| `<C-p>` | CtrlP files |
+| `<C-p>` | fzf Files |
 | `<leader>p` / `<leader>b` / `<leader>g` | fzf Files / Buffers / Git files |
 | `gd` / `gr` / `gi` / `K` | coc.nvim: definition / references / implementation / hover |
 | `[g` / `]g` | coc.nvim: previous / next diagnostic |
@@ -288,20 +283,20 @@ coc's bundle uses the RegExp `v` flag (ES2024): any node **>= 20** works,
 older defaults (a distro node 18 for instance) crash the client at startup
 with `SyntaxError: Invalid flags supplied to RegExp constructor 'v'`.
 
-- **mise users**: install once (`mise install node@22`) and pin coc to it
-  without touching the system default: `plugin_coc.vim` already does:
-
-  ```vim
-  let g:coc_node_path = expand('~/.local/share/mise/installs/node/22.23.2/bin/node')
-  ```
-
-  Bump the path after `mise install node@<newer>`. The rest of the system
-  keeps its own node (18 here).
+- **mise users**: nothing to maintain. `plugin_coc.vim` resolves the node
+  managed by mise at startup (`mise where node`, default install) and points
+  coc at it when the resolved version is >= 20. The rest of the system keeps
+  its own node (18 here). Bumping node (`mise install node@<newer>` +
+  `mise use node@<newer>`) is picked up on the next vim start.
 
 - **Everyone else**: put a node >= 20 binary in `PATH`, nothing to
   configure (`g:coc_node_path` unset means coc uses `node` from `PATH`).
 
-The smoke suite (`make smoke`) checks that the pinned binary is present.
+- **Custom node**: set `g:coc_node_path` in `~/.vim/vimrc`; it always wins
+  over the mise resolution.
+
+The smoke suite (`make smoke`) checks that the resolved binary is present
+(or skipped when `g:coc_node_path` is unset).
 
 ## Known issues (historical: YCM era)
 

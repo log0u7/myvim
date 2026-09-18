@@ -1,4 +1,4 @@
-" Plugin ALE - async linting (YCM owns LSP; ALE lints only)
+" Plugin ALE - async linting (coc.nvim owns LSP; ALE lints only)
 let g:ale_disable_lsp = 1
 let g:ale_fix_on_save = 0
 

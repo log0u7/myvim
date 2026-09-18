@@ -7,8 +7,58 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- `coc-snippets` extension declared (`g:coc_global_extensions`): the
+  UltiSnips/vim-snippets snippets are now visible in the coc completion
+  (bridge was missing: snippets installed but unreachable from coc)
+- `<C-p>` mapped to fzf `:Files` (reflex preserved after CtrlP removal)
+- `swapdir/` and `undodir/` created automatically at first start
+  (`mkdir` mode 0700: swapfiles can hold sensitive text); no more manual
+  `mkdir -p` in the `~/.vim` quickstart
+- Truecolor detection: `termguicolors` set automatically when `$COLORTERM`
+  announces 24-bit support (tokyonight/onedark degraded without it);
+  obsolete `t_Co=256`/`solarized_termcolors` dropped from the solarized
+  activation block
+
+### Changed
+
+- `W` command alias delegates to the vim-eunuch `:SudoWrite` instead of
+  the hand-rolled `w !sudo tee` (eunuch was installed and unused here)
+- Node runtime: the hard pin `g:coc_node_path` on
+  `~/.local/share/mise/installs/node/22.23.2/bin/node` is replaced by a
+  startup resolution of the mise-managed node (`mise where node`, default
+  install) when the resolved version is >= 20; `g:coc_node_path` set in
+  the vimrc still wins; PATH node remains the no-mise fallback
+- vim-go unpinned (was `v1.29`, 2023)
+- Mappings sweep: non-recursive `nnoremap` + `<Cmd>` execution
+  (vim_mappings.vim, plugin_coc.vim), `<silent>` made consistent
+- Autocmds wrapped in augroups (myvim_mappings, myvim_nerdtree)
+- ftplugin/yaml.vim: standard `b:did_ftplugin` guard + `b:undo_ftplugin`
+- Swapfiles get unique names (`directory` trailing `//`), obsolete
+  `set nopaste` dropped, `set number` spelling, `$HOME` -> `~` idiom
+- Comment style unified (`" Plugin X` headers, spaces before trailing
+  comments), 3x duplicated mapping-pointer comments removed
+
+### Removed
+
+- Dead/abandoned plugins (submodules of `~/.vim` + declarative lines):
+  vim-bufferline (~2017, airline covers the tabline), auto-pairs
+  (abandoned 2019), vim-virtualenv (~2015), Dockerfile.vim (stale,
+  coc-docker covers), vim-minimap (stale)
+- CtrlP (doublon: fzf covers files/buffers/git; CtrlP was a kept-alive
+  fork) + config stubs `plugin_ctrlp.vim` and `plugin_minimap.vim`
+
 ### Fixed
 
+- Stale ALE header comment ("YCM owns LSP"; YCM retired 2026-09, coc
+  owns LSP)
+- README quickstart `mapleader` example was a shell-escape trap
+  (`"let mapleader = "\"`: the backslash escapes the closing quote, the
+  leader would silently become `"`); now `"let mapleader = '\'`
+  (README snippet + live vimrc kept byte-identical)
+- doc/myvim.txt: vim_settings.vim no longer described as owning the
+  commands (moved to vim_aliases.vim in 0.2.0)
 - Fugitive placeholder hostname typo (`gilab` -> `gitlab`, inert example
   for a future private instance; gitlab.com itself needs no config)
 - Insert-mode `<F8>` typed `:MarkdownPreview<CR>` as text instead of
@@ -20,25 +70,26 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Dead NERDTree exit autocmd removed (strict subset of the tab-close
   autocmd; the only-tab case still exits Vim, verified empirically)
 
-### Changed
-
-- Mappings sweep: non-recursive `nnoremap` + `<Cmd>` execution
-  (vim_mappings.vim, plugin_coc.vim), `<silent>` made consistent
-- Autocmds wrapped in augroups (myvim_mappings, myvim_nerdtree)
-- ftplugin/yaml.vim: standard `b:did_ftplugin` guard + `b:undo_ftplugin`
-- Swapfiles get unique names (`directory` trailing `//`), obsolete
-  `set nopaste` dropped, `set number` spelling, `$HOME` -> `~` idiom
-- Comment style unified (`" Plugin X` headers, spaces before trailing
-  comments), 3x duplicated mapping-pointer comments removed
-
 ### Tests
 
-- Smoke suite: 7 new checks (W/Q aliases, coc `gd`/`K` mappings, markdown
-  F8 autocmd, roles.ini readable, manager vimrc path, help file + tags)
+- Smoke suite re-balanced (count maintained at 31): Minimap `<F4>`, CtrlP
+  and auto-pairs checks dropped with their plugins; new checks: fzf
+  `<C-p>` mapping, coc-snippets declared, eunuch `:SudoWrite` present,
+  undodir auto-created; `coc node binary present` now tolerant (skips
+  when `g:coc_node_path` is unset)
+- Smoke suite: 7 new checks in the previous audit round (W/Q aliases,
+  coc `gd`/`K` mappings, markdown F8 autocmd, roles.ini readable,
+  manager vimrc path, help file + tags)
 
 ### Documentation
 
-- doc/myvim.txt: structure list completed (vim_aliases.vim,
+- README: PluginBegin block pruned (6 dead plugins, vim-go unpinned,
+  `mkdir -p` dropped), mappings table (`<F4>` out, `<C-p>` = fzf Files),
+  module table (`W` = `:SudoWrite`, node resolution), Node runtime
+  section rewritten (mise resolution, custom-node override), colorscheme
+  section notes auto `termguicolors`
+- doc/myvim.txt: same topics resynchronized (mappings, node runtime,
+  coc extensions, aliases); structure list completed (vim_aliases.vim,
   plugin_pluginmanager.vim), `<Cmd>` mapping style documented
 - CHANGELOG [0.2.0]: smoke check count corrected (22 -> 24, as released)
 

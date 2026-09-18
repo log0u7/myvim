@@ -6,10 +6,18 @@
 " entirely if the dual gutter bothers you: let g:ale_enabled = 0
 "
 " Node runtime: coc needs node >= 20 (its bundle uses the RegExp v flag,
-" ES2024) while the system node stays at 18. The node 22 install managed by
-" mise is pinned here; bump the path after `mise install node@<newer>`.
-
-let g:coc_node_path = expand('~/.local/share/mise/installs/node/22.23.2/bin/node')
+" ES2024) while the system node stays at 18. The node managed by mise is
+" resolved at startup (`mise where node`, default install, must be >= 20);
+" a g:coc_node_path set in ~/.vim/vimrc wins. Without mise, coc falls back
+" to the `node` binary in PATH.
+if !exists('g:coc_node_path') && executable('mise')
+  let s:mise_node = trim(system('mise where node 2>/dev/null'))
+  if !v:shell_error && s:mise_node !=# '' && filereadable(s:mise_node . '/bin/node')
+        \ && str2nr(matchstr(trim(system(s:mise_node . '/bin/node --version')), '\d\+')) >= 20
+    let g:coc_node_path = s:mise_node . '/bin/node'
+  endif
+  unlet! s:mise_node
+endif
 
 let g:coc_global_extensions = [
       \   'coc-yaml',
@@ -19,6 +27,7 @@ let g:coc_global_extensions = [
       \   'coc-docker',
       \   'coc-toml',
       \   'coc-ansible',
+      \   'coc-snippets',
       \   'coc-vimlsp',
       \ ]
 
