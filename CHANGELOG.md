@@ -90,6 +90,19 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - OSC52 payload depended on GNU `base64 -w0`: on BSD/macOS the failing
   invocation emitted an empty payload that CLEARED the local clipboard;
   plain stdin base64 with CR/LF stripped (single-line payload on both)
+- actionlint ran on every yaml buffer (compose, k8s, ansible,
+  gitlab-ci): false errors everywhere; it is scoped to
+  `.github/workflows` files (buffer-local) now
+- `command! Q qa!` silently discarded unsaved buffers; `Q` quits with
+  `qa` (refuses while modified buffers exist) now
+- coc node resolution ran 2-3 blocking subprocesses on every start and
+  could not rescue the coc spawn anyway: `$COC_NODE_PATH` honored
+  first, outcome cached in `g:coc_node_path` (re-source runs zero
+  subprocesses), stderr redirected, warning names the failing link
+  (mise absent / resolution failed / node too old)
+- NERDTree auto-opened on every VimEnter (git commit, crontab -e,
+  sudoedit) and raised E492 when the plugin was missing; the autocmd
+  is guarded by `exists(':NERDTree')` now
 
 ### Security
 
@@ -99,6 +112,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Tests
 
+- Smoke: +4 robustness checks (NERDTree VimEnter guard, actionlint on
+  GH workflow yaml, coc resolution concluded, `Q` no-bang) -> 43
 - Smoke: +4 OSC52 checks (encoder + payload, byte cap, opt-out
   default, opt-out gate) -> 39
 - Smoke suite re-balanced (count maintained at 31): Minimap `<F4>`, CtrlP
