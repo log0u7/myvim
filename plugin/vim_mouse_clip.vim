@@ -1,26 +1,11 @@
-" vim_mouse_clip.vim - Mouse capture toggle (F6) and OSC52 clipboard over SSH
-"
-" F6 flips between vim managing the mouse (visual selection, scrolling)
-" and the terminal managing it (native selection: select = terminal
-" copy, paste with the terminal binding). The state echoes in the
-" message area.
+" vim_mouse_clip.vim - OSC52 clipboard over SSH (F6 toggle in
+" autoload/mouse_clip.vim)
 "
 " OSC52: when running over SSH, yanking feeds the LOCAL clipboard with
 " the OSC52 escape sequence (it travels through ssh; no +clipboard
 " build needed - the Ubuntu vim ships with clipboard=0). Local sessions
 " are a no-op: the terminal selection covers that case. Yanks over
 " ~100KB are skipped: terminals truncate large sequences silently.
-
-" Toggle between vim-managed and terminal-managed mouse.
-function! mouse_clip#toggle() abort
-  if &mouse ==# ''
-    set mouse=a
-    echo 'mouse: vim (visual selection)'
-  else
-    set mouse=
-    echo 'mouse: terminal (native selection)'
-  endif
-endfunction
 
 function! s:osc52(text) abort
   if len(a:text) > 100000 | return | endif
