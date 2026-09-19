@@ -6,29 +6,46 @@
 " entirely if the dual gutter bothers you: let g:ale_enabled = 0
 "
 " Node runtime: coc needs node >= 20 (its bundle uses the RegExp v flag,
-" ES2024) while the system node stays at 18. Preference order: an
-" explicit g:coc_node_path in ~/.vim/vimrc, then the node managed by
-" mise (`mise where node`, must resolve to >= 20), then the PATH node
-" (also must be >= 20). When no valid runtime is found, warn loudly
-" instead of letting coc spawn a service that dies on its first RegExp
-" (silent 'abnormal exit with: 1').
+" ES2024) while the system node stays at 18. Resolution order (first
+" match wins; the outcome is cached in g:coc_node_path so re-sourcing
+" skips the subprocesses): $COC_NODE_PATH, an explicit g:coc_node_path
+" (checked before this block), the mise-managed node (`mise where node`),
+" then the PATH node - all must resolve to >= 20. When nothing does,
+" warn loudly WITH the reason instead of letting coc spawn a service
+" that dies on its first RegExp (silent 'abnormal exit with: 1').
 function! s:node_major(node_bin) abort
-  return str2nr(matchstr(trim(system(shellescape(a:node_bin) . ' --version')), '\d\+'))
+  return str2nr(matchstr(trim(system(shellescape(a:node_bin) . ' --version 2>/dev/null')), '\d\+'))
 endfunction
 
 if !exists('g:coc_node_path')
-  let s:mise_node = executable('mise')
-        \ ? trim(system('mise where node 2>/dev/null')) : ''
-  let s:mise_bin = s:mise_node !=# '' && filereadable(s:mise_node . '/bin/node')
-        \ ? s:mise_node . '/bin/node' : ''
-  if s:mise_bin !=# '' && s:node_major(s:mise_bin) >= 20
-    let g:coc_node_path = s:mise_bin
-  elseif s:node_major('node') < 20
-    echom '[myvim] coc: no node >= 20 found'
-          \ . (s:mise_bin !=# '' ? ' (mise node too old)' : ' (mise resolution failed)')
-          \ . ' - coc will fail to start; set g:coc_node_path.'
+  if !empty($COC_NODE_PATH) && filereadable($COC_NODE_PATH)
+    let g:coc_node_path = $COC_NODE_PATH
+  else
+    let s:mise_node = executable('mise')
+          \ ? trim(system('mise where node 2>/dev/null')) : ''
+    let s:mise_bin = s:mise_node !=# '' && filereadable(s:mise_node . '/bin/node')
+          \ ? s:mise_node . '/bin/node' : ''
+    let s:path_node = exepath('node')
+    let s:path_major = s:path_node !=# '' ? s:node_major(s:path_node) : 0
+    if s:mise_bin !=# '' && s:node_major(s:mise_bin) >= 20
+      let g:coc_node_path = s:mise_bin
+    elseif s:path_node !=# '' && s:path_major >= 20
+      let g:coc_node_path = s:path_node
+    else
+      if !executable('mise') && s:path_node ==# ''
+        let s:why = 'no node in PATH and mise absent'
+      elseif !executable('mise')
+        let s:why = 'system node ' . s:path_major . ' < 20'
+      elseif s:mise_bin ==# ''
+        let s:why = 'mise node resolution failed'
+      else
+        let s:why = 'mise node ' . s:node_major(s:mise_bin) . ' < 20'
+      endif
+      echom '[myvim] coc: no node >= 20 found (' . s:why . ')'
+            \ . ' - coc will fail to start; set $COC_NODE_PATH or g:coc_node_path.'
+    endif
+    unlet! s:mise_node s:mise_bin s:path_node s:path_major s:why
   endif
-  unlet! s:mise_node s:mise_bin
 endif
 
 let g:coc_global_extensions = [
