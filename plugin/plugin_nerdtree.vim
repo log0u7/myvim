@@ -4,7 +4,11 @@ augroup myvim_nerdtree
   autocmd!
 
   autocmd StdinReadPre * let s:std_in=1
-  autocmd VimEnter * NERDTree | if argc() > 0 || exists("s:std_in") | wincmd p | endif
+  " Guarded: NERDTree may be absent (E492) and VimEnter fires in git
+  " commit / crontab -e / sudoedit sessions too.
+  autocmd VimEnter * if exists(':NERDTree') == 2
+        \ | NERDTree | if argc() > 0 || exists("s:std_in") | wincmd p | endif
+        \ | endif
   " Close the tab if NERDTree is the only window remaining in it; when this
   " tab is the only tab, quitting the last window exits Vim.
   autocmd BufEnter * if winnr('$') == 1 && exists('b:NERDTree') && b:NERDTree.isTabTree() | quit | endif
