@@ -5,11 +5,12 @@
 augroup myvim_mappings
   autocmd!
 
-  " IDE panels
+  " IDE panels (F2-F6/F10 belong to vdebug inside a debug session:
+  " buffer-local mappings win there, F5 run, F4 step out, F6 close)
   nnoremap <F2> <Cmd>NERDTreeToggle<CR>
   nnoremap <F3> <Cmd>PluginManagerToggle<CR>
   nnoremap <F4> <Cmd>MinimapToggle<CR>
-  nnoremap <F6> <Cmd>call mouse_clip#toggle()<CR>
+  nnoremap <F9> <Cmd>call mouse_clip#toggle()<CR>
   nnoremap <F7> <Cmd>UndotreeToggle<CR>
 
   " Markdown preview (markdown buffers only)

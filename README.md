@@ -234,9 +234,10 @@ See `:help myvim` after generating helptags.
 | `<F2>` | NERDTree toggle |
 | `<F3>` | Plugin Manager sidebar |
 | `<F4>` | Minimap toggle (needs `code-minimap`: `cargo install code-minimap`) |
-| `<F6>` | Mouse capture toggle (vim ⇄ terminal selection) |
+| `<F9>` | Mouse capture toggle (vim ⇄ terminal selection) |
 | `<F7>` | Undotree toggle |
 | `<F8>` | Markdown Preview (markdown buffers) |
+| `F2/F3/F4/F6/F10` (debug session) | vdebug: step over / step into / step out / close / breakpoint (buffer-local, they win inside a debug session) |
 | `<C-p>` | fzf Files |
 | `<leader>p` / `<leader>b` / `<leader>g` | fzf Files / Buffers / Git files |
 | `gd` / `gr` / `gi` / `K` | coc.nvim: definition / references / implementation / hover |

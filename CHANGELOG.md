@@ -12,7 +12,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Minimap restored with the maintained fork: `wfxr/minimap.vim` bound to
   `<F4>` (the slot freed by the retired vim-minimap; needs the
   `code-minimap` binary, installed via cargo)
-- `<F6>` mouse capture toggle: `mouse=a` (vim handles the mouse) ⇄
+- `<F9>` mouse capture toggle: `mouse=a` (vim handles the mouse) ⇄
   `mouse=` (terminal selection = terminal copy/paste); state echoed on
   toggle
 - OSC52 clipboard: on SSH sessions, yanking feeds the LOCAL clipboard
@@ -33,6 +33,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
+- Mouse capture toggle moves from `<F6>` to `<F9>`: vdebug owns
+  F2-F6/F10 inside a debug session (buffer-local step over/into/out,
+  close, breakpoint)
 - `W` command alias delegates to the vim-eunuch `:SudoWrite` instead of
   the hand-rolled `w !sudo tee` (eunuch was installed and unused here)
 - Node runtime: the hard pin `g:coc_node_path` on
