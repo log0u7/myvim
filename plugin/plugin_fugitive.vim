@@ -1,6 +1,7 @@
 " Fugitive
-" Map SSH clone URLs to HTTPS for the web view
-let g:fugitive_gitlab_domains = {'ssh://git.private.gitlab.domain.tld': 'https://gitlab.domain.tld'}
+" Placeholder domains - enable (uncomment) only with real values, a
+" fake domain feeds :GBrowse a dead web view:
+" let g:fugitive_gitlab_domains = {'ssh://git.private.gitlab.domain.tld': 'https://gitlab.domain.tld'}
 
 " NEVER commit real API tokens. Put them in a gitignored file instead:
 "   ~/.vim/plugin/fugitive-secrets.vim  (add "plugin/*-secrets.vim" to ~/.vim/.gitignore)

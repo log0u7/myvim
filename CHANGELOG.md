@@ -52,6 +52,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   `set nopaste` dropped, `set number` spelling, `$HOME` -> `~` idiom
 - Comment style unified (`" Plugin X` headers, spaces before trailing
   comments), 3x duplicated mapping-pointer comments removed
+- vim_mappings.vim: plain mappings moved out of the augroup (only
+  autocmds belong there) and `<silent>` made uniform across global
+  maps (F-keys + fzf, matching F8/coc)
+- plugin_fugitive.vim: the placeholder `g:fugitive_gitlab_domains`
+  dict is commented out until real values exist (a fake domain feeds
+  `:GBrowse` a dead web view)
 
 ### Removed
 
@@ -103,6 +109,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - NERDTree auto-opened on every VimEnter (git commit, crontab -e,
   sudoedit) and raised E492 when the plugin was missing; the autocmd
   is guarded by `exists(':NERDTree')` now
+- `set undodir=~/.vim/undodir` overwrote a user-configured value; the
+  dir is prepended (`^=`) now, mirroring `directory^=`
 
 ### Security
 
@@ -112,11 +120,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Tests
 
+- Smoke: +5 quality checks (fugitive placeholder commented, global
+  maps `<silent>`, swapdir auto-created, undodir prepended with a
+  decoy re-source, mouse toggle flips `&mouse`) -> 48
 - Smoke: +4 robustness checks (NERDTree VimEnter guard, actionlint on
   GH workflow yaml, coc resolution concluded, `Q` no-bang) -> 43
 - Smoke: +4 OSC52 checks (encoder + payload, byte cap, opt-out
   default, opt-out gate) -> 39
-- Smoke suite re-balanced (count maintained at 31): Minimap `<F4>`, CtrlP
+- Smoke suite re-balanced (count maintained at 31; the post-sync round
+  then brought it to 35, later rounds above track the rest): Minimap
+  `<F4>`, CtrlP
   and auto-pairs checks dropped with their plugins; new checks: fzf
   `<C-p>` mapping, coc-snippets declared, eunuch `:SudoWrite` present,
   undodir auto-created; `coc node binary present` now tolerant (skips
