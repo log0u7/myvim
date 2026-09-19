@@ -20,7 +20,7 @@ Files:
     vim_settings.vim        General options (undo, swap, diff; dirs auto-created)
     vim_aliases.vim         Command aliases (`W` -> eunuch `:SudoWrite`, `Q` quit-all)
     vim_mappings.vim        Every global key mapping (single audit point)
-    vim_mouse_clip.vim      Mouse capture toggle (F6) + OSC52 clipboard over SSH
+    vim_mouse_clip.vim      Mouse capture toggle (F9) + OSC52 clipboard over SSH
     vim_colorscheme.vim     Colorscheme selection mechanism
     plugin_pluginmanager.vim  vim-plugin-manager: vimrc path, sidebar width
     plugin_coc.vim          coc.nvim LSP: extensions, generic servers, mappings,
@@ -99,11 +99,15 @@ MOUSE AND CLIPBOARD                                      *myvim-mouse-clip*
 `mouse` option between `a` (vim handles the mouse: visual selection,
 scrolling) and `""` (the terminal handles it: selecting copies in the
 terminal, paste with the terminal binding). OSC52: on an SSH session
-(`$SSH_CONNECTION` set), every yank also sends the yanked text to the
-LOCAL clipboard through the OSC52 escape sequence, which travels
-through ssh; no `+clipboard` build is needed. Local sessions stay
-no-op (the terminal selection covers them), and yanks over ~100KB are
-skipped.
+(`$SSH_CONNECTION` set), every yank also sends the yanked lines
+(`v:event.regcontents`) to the LOCAL clipboard through the OSC52
+escape sequence, which travels through ssh; no `+clipboard` build is
+needed. Local sessions stay no-op (the terminal selection covers
+them), and yanks over ~100KB of bytes are skipped.
+
+Exposure: over SSH, buffer text (secrets included) is pushed to the
+clipboard of the client machine. Opt out with `let g:myvim_osc52 = 0`;
+F9 keeps toggling mouse capture independently.
 
 EXTENDING                                                *myvim-extend*
 

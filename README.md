@@ -209,7 +209,7 @@ Makefile          make smoke
 | `plugin/vim_settings.vim` | General options (undo, swap, diff) |
 | `plugin/vim_aliases.vim` | Command aliases (`W` delegates to `:SudoWrite`, `Q`) |
 | `plugin/vim_mappings.vim` | Every global key mapping (single audit point) |
-| `plugin/vim_mouse_clip.vim` | Mouse capture toggle (F6) and OSC52 clipboard over SSH |
+| `plugin/vim_mouse_clip.vim` | Mouse capture toggle (F9) and OSC52 clipboard over SSH (`g:myvim_osc52 = 0` to opt out) |
 | `plugin/vim_colorscheme.vim` | Colorscheme activation mechanism |
 | `plugin/plugin_coc.vim` | coc.nvim LSP: extensions, generic servers, mappings, node runtime resolution (mise) |
 | `plugin/plugin_minimap.vim` | wfxr/minimap.vim options (code-minimap binary from cargo) |
@@ -244,6 +244,13 @@ See `:help myvim` after generating helptags.
 | `[g` / `]g` | coc.nvim: previous / next diagnostic |
 | `<leader>rn` / `<leader>ca` | coc.nvim: rename / code action |
 | `<leader>d` / `<leader>o` | coc.nvim: diagnostics list / outline |
+
+### OSC52 over SSH
+
+On an SSH session every yank is pushed to the local (client) clipboard
+via the OSC52 escape sequence: buffer text leaves the remote machine,
+secrets included. Opt out with `let g:myvim_osc52 = 0`; `F9` keeps
+toggling mouse capture independently.
 
 ## Tests
 

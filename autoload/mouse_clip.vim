@@ -19,6 +19,11 @@ function! mouse_clip#toggle() abort
   endif
 endfunction
 
+" OSC52 opt-out gate (g:myvim_osc52 = 0 disables clipboard pushes).
+function! mouse_clip#enabled() abort
+  return get(g:, 'myvim_osc52', 1)
+endfunction
+
 " Base64 payload for OSC52. The ~100KB cap counts BYTES (strlen):
 " terminals truncate large sequences silently. Plain `base64` wraps at
 " 76 columns on GNU (BSD/macOS does not wrap); stripping CR/LF yields
@@ -30,5 +35,6 @@ endfunction
 
 " Send text to the LOCAL clipboard over SSH.
 function! mouse_clip#osc52(text) abort
+  if !mouse_clip#enabled() | return | endif
   call chansend(v:stderr, printf("\e]52;c;%s\a", mouse_clip#encode(a:text)))
 endfunction

@@ -82,9 +82,25 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - `command W/Q` raised E174 on re-source (missing `command!` bang)
 - Dead NERDTree exit autocmd removed (strict subset of the tab-close
   autocmd; the only-tab case still exits Vim, verified empirically)
+- OSC52 yank sent the unnamed register: a named-register yank (`"ayy`)
+  pushed stale `@"` content; the yanked lines (`v:event.regcontents`)
+  are sent now
+- OSC52 size cap counted characters: multibyte yanks bypassed the
+  ~100KB guard; bytes are counted (`strlen`) now
+- OSC52 payload depended on GNU `base64 -w0`: on BSD/macOS the failing
+  invocation emitted an empty payload that CLEARED the local clipboard;
+  plain stdin base64 with CR/LF stripped (single-line payload on both)
+
+### Security
+
+- `g:myvim_osc52` (default 1) opts out of OSC52 clipboard pushes:
+  over SSH, every yank sends buffer text (secrets included) to the
+  clipboard of the client machine
 
 ### Tests
 
+- Smoke: +4 OSC52 checks (encoder + payload, byte cap, opt-out
+  default, opt-out gate) -> 39
 - Smoke suite re-balanced (count maintained at 31): Minimap `<F4>`, CtrlP
   and auto-pairs checks dropped with their plugins; new checks: fzf
   `<C-p>` mapping, coc-snippets declared, eunuch `:SudoWrite` present,
@@ -105,6 +121,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   coc extensions, aliases); structure list completed (vim_aliases.vim,
   plugin_pluginmanager.vim), `<Cmd>` mapping style documented
 - CHANGELOG [0.2.0]: smoke check count corrected (22 -> 24, as released)
+- README/doc: mouse-clip row and structure list fixed (`F6` -> `<F9>`,
+  stale since the F6 -> F9 move); OSC52 opt-out (`g:myvim_osc52`) and
+  its exposure risk documented
 
 ## [0.2.0] - 2026-09-16
 
