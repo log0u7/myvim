@@ -18,3 +18,17 @@ function! mouse_clip#toggle() abort
     echo 'mouse: terminal (native selection)'
   endif
 endfunction
+
+" Base64 payload for OSC52. The ~100KB cap counts BYTES (strlen):
+" terminals truncate large sequences silently. Plain `base64` wraps at
+" 76 columns on GNU (BSD/macOS does not wrap); stripping CR/LF yields
+" the single-line payload both accept (no GNU-only -w0 dependency).
+function! mouse_clip#encode(text) abort
+  if strlen(a:text) > 100000 | return '' | endif
+  return substitute(system('base64', a:text), '[\r\n]', '', 'g')
+endfunction
+
+" Send text to the LOCAL clipboard over SSH.
+function! mouse_clip#osc52(text) abort
+  call chansend(v:stderr, printf("\e]52;c;%s\a", mouse_clip#encode(a:text)))
+endfunction
