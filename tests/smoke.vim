@@ -27,12 +27,25 @@ call s:check('NERDTree menu config', exists('g:NERDTreeMinimalMenu') && g:NERDTr
 " crontab -e / sudoedit sessions too
 call s:check('NERDTree VimEnter guarded', exists('#myvim_nerdtree#VimEnter') == 1 && execute('autocmd myvim_nerdtree VimEnter') =~# 'exists')
 call s:check('undo/persistent config', &undodir =~# 'undodir' && &undofile && isdirectory(expand('~/.vim/undodir')))
+call s:check('swapdir auto-created + prepended', isdirectory(expand('~/.vim/swapdir')) && &directory =~# 'swapdir')
+" re-source with a decoy in front: undodir must be PREPENDED (^=), not
+" overwritten (=) - a user-configured first entry has to survive
+let &undodir = '/tmp/myvim-decoy//'
+execute 'source' fnameescape(expand('~/.vim/pack/plugins/start/myvim/plugin/vim_settings.vim'))
+call s:check('undodir prepended (user value kept)', &undodir =~# 'myvim-decoy')
 
 " mappings
 call s:check('NERDTree <F2> mapping', maparg('<F2>', 'n') =~# 'NERDTreeToggle')
 call s:check('Undotree <F7> mapping', maparg('<F7>', 'n') =~# 'UndotreeToggle')
 call s:check('fzf <C-p> mapping', maparg('<C-p>', 'n') =~# 'Files')
 call s:check('fzf <leader>p mapping', maparg('<leader>p', 'n') =~# 'Files')
+" every global map goes through <Cmd> (no echo anyway): <silent> stays
+" uniform with the F8/coc maps instead of half the file having it
+let s:silent_ok = 1
+for s:k in ['<F2>', '<F3>', '<F4>', '<F9>', '<F7>', '<C-p>', '<leader>p', '<leader>b', '<leader>g']
+  let s:silent_ok = s:silent_ok && get(maparg(s:k, 'n', 0, 1), 'silent', 0)
+endfor
+call s:check('global maps <silent>', s:silent_ok)
 
 " plugins
 call s:check('ALE command', exists(':ALEInfo') == 2)
@@ -53,9 +66,16 @@ call s:check('Vimwiki command', exists(':VimwikiIndex') == 2)
 call s:check('Gutentags loaded', exists('g:loaded_gutentags') && g:loaded_gutentags == 1)
 call s:check('tmux-navigator <C-h> mapping', maparg('<C-h>', 'n') =~# 'TmuxNavigateLeft')
 call s:check('vim-ai :AI command', exists(':AI') == 2)
+" the placeholder domains dict must stay commented until real values
+" exist (a fake domain feeds :GBrowse a dead web view)
+call s:check('fugitive placeholder domains commented', !exists('g:fugitive_gitlab_domains'))
 call s:check('minimap <F4> mapping', maparg('<F4>', 'n') =~# 'MinimapToggle')
 call s:check('minimap :MinimapToggle command', exists(':MinimapToggle') == 2)
 call s:check('mouse toggle <F9> mapping', maparg('<F9>', 'n') =~# 'mouse_clip#toggle')
+let s:mouse_before = &mouse
+call mouse_clip#toggle()
+call s:check('mouse toggle flips mouse option', &mouse !=# s:mouse_before)
+call mouse_clip#toggle()
 call s:check('OSC52 yank autocmd registered', exists('#myvim_mouse_clip#TextYankPost') == 1)
 " OSC52 helpers live in autoload/mouse_clip.vim (smoke-testable). The
 " try/catch keeps installs without them fail-visible instead of raising
