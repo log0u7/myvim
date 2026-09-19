@@ -72,7 +72,7 @@ MAPPINGS                                                *myvim-mappings*
     <F3>            Plugin Manager sidebar
     <F4>            Minimap toggle (wfxr/minimap.vim; needs the
                     code-minimap binary: cargo install code-minimap)
-    <F6>            Mouse capture toggle: vim (visual selection) ⇄
+    <F9>            Mouse capture toggle: vim (visual selection) ⇄
                     terminal (native selection = terminal copy/paste)
     <F7>            Undotree toggle
     <F8>            Markdown Preview (markdown buffers)
@@ -81,13 +81,17 @@ MAPPINGS                                                *myvim-mappings*
     <leader>b       fzf Buffers
     <leader>g       fzf Git files
 
+vdebug (Xdebug) owns F2-F6/F10 inside a debug session (step over, step
+into, step out, close, breakpoint): its buffer-local mappings win over
+the global ones there. Between sessions, F4 stays the minimap.
+
 Command mappings execute through `<Cmd>` (mode-independent, no jumplist
 or search-history pollution). The `W` (delegates to the vim-eunuch
 `:SudoWrite`) and `Q` command aliases are in `vim_aliases.vim`.
 
 MOUSE AND CLIPBOARD                                      *myvim-mouse-clip*
 
-`vim_mouse_clip.vim` holds two behaviors. The F6 toggle switches the
+`vim_mouse_clip.vim` holds two behaviors. The F9 toggle switches the
 `mouse` option between `a` (vim handles the mouse: visual selection,
 scrolling) and `""` (the terminal handles it: selecting copies in the
 terminal, paste with the terminal binding). OSC52: on an SSH session

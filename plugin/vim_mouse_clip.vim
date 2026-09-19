@@ -1,4 +1,4 @@
-" vim_mouse_clip.vim - OSC52 clipboard over SSH (F6 toggle in
+" vim_mouse_clip.vim - OSC52 clipboard over SSH (F9 toggle in
 " autoload/mouse_clip.vim)
 "
 " OSC52: when running over SSH, yanking feeds the LOCAL clipboard with
