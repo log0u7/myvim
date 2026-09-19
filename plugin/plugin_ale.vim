@@ -9,5 +9,16 @@ let g:ale_linters = {
       \   'python': ['flake8'],
       \   'sh': ['shellcheck'],
       \   'terraform': ['tflint'],
-      \   'yaml': ['actionlint', 'yamllint'],
+      \   'yaml': ['yamllint'],
       \ }
+
+" actionlint understands GitHub workflow files only: linting every yaml
+" (compose, k8s, ansible, gitlab-ci) produced false errors. Workflow
+" yamls get it buffer-locally, everything else stays yamllint-only.
+augroup myvim_ale
+  autocmd!
+  autocmd FileType yaml
+        \ if expand('<afile>:p') =~# '/\.github/workflows/'
+        \ |   let b:ale_linters = ['actionlint', 'yamllint']
+        \ | endif
+augroup END
