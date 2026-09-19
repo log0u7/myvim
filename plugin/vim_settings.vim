@@ -17,7 +17,9 @@ set directory^=~/.vim/swapdir//
 if !isdirectory(expand('~/.vim/undodir'))
   call mkdir(expand('~/.vim/undodir'), 'p', 0700)
 endif
-set undodir=~/.vim/undodir
+" Prepend (^=), never overwrite: a user-configured undodir first entry
+" must survive myvim loading.
+set undodir^=~/.vim/undodir
 set undofile
 
 " Set diff algo to patience and indent heuristic
