@@ -20,10 +20,12 @@ Files:
     vim_settings.vim        General options (undo, swap, diff; dirs auto-created)
     vim_aliases.vim         Command aliases (`W` -> eunuch `:SudoWrite`, `Q` quit-all)
     vim_mappings.vim        Every global key mapping (single audit point)
+    vim_mouse_clip.vim      Mouse capture toggle (F6) + OSC52 clipboard over SSH
     vim_colorscheme.vim     Colorscheme selection mechanism
     plugin_pluginmanager.vim  vim-plugin-manager: vimrc path, sidebar width
     plugin_coc.vim          coc.nvim LSP: extensions, generic servers, mappings,
                             node runtime resolution (mise)
+    plugin_minimap.vim      wfxr/minimap.vim options (code-minimap binary)
     plugin_vimai.vim        vim-ai AI assistant (local ollama endpoint)
     plugin_ale.vim          ALE linters for devops filetypes
     plugin_gutentags.vim    ctags exclusions
@@ -68,6 +70,10 @@ MAPPINGS                                                *myvim-mappings*
 
     <F2>            NERDTree toggle
     <F3>            Plugin Manager sidebar
+    <F4>            Minimap toggle (wfxr/minimap.vim; needs the
+                    code-minimap binary: cargo install code-minimap)
+    <F6>            Mouse capture toggle: vim (visual selection) ⇄
+                    terminal (native selection = terminal copy/paste)
     <F7>            Undotree toggle
     <F8>            Markdown Preview (markdown buffers)
     <C-p>           fzf Files
@@ -78,6 +84,18 @@ MAPPINGS                                                *myvim-mappings*
 Command mappings execute through `<Cmd>` (mode-independent, no jumplist
 or search-history pollution). The `W` (delegates to the vim-eunuch
 `:SudoWrite`) and `Q` command aliases are in `vim_aliases.vim`.
+
+MOUSE AND CLIPBOARD                                      *myvim-mouse-clip*
+
+`vim_mouse_clip.vim` holds two behaviors. The F6 toggle switches the
+`mouse` option between `a` (vim handles the mouse: visual selection,
+scrolling) and `""` (the terminal handles it: selecting copies in the
+terminal, paste with the terminal binding). OSC52: on an SSH session
+(`$SSH_CONNECTION` set), every yank also sends the yanked text to the
+LOCAL clipboard through the OSC52 escape sequence, which travels
+through ssh; no `+clipboard` build is needed. Local sessions stay
+no-op (the terminal selection covers them), and yanks over ~100KB are
+skipped.
 
 EXTENDING                                                *myvim-extend*
 

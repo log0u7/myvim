@@ -104,6 +104,7 @@ PluginBegin
   Plugin 'junegunn/fzf.vim'
   Plugin 'jlanzarotta/bufexplorer'
   Plugin 'mbbill/undotree'
+  Plugin 'wfxr/minimap.vim'
   " --- completion / LSP (coc.nvim replaced YouCompleteMe) ---
   Plugin 'neoclide/coc.nvim', {'branch': 'release'}
   Plugin 'honza/vim-snippets'
@@ -208,8 +209,10 @@ Makefile          make smoke
 | `plugin/vim_settings.vim` | General options (undo, swap, diff) |
 | `plugin/vim_aliases.vim` | Command aliases (`W` delegates to `:SudoWrite`, `Q`) |
 | `plugin/vim_mappings.vim` | Every global key mapping (single audit point) |
+| `plugin/vim_mouse_clip.vim` | Mouse capture toggle (F6) and OSC52 clipboard over SSH |
 | `plugin/vim_colorscheme.vim` | Colorscheme activation mechanism |
 | `plugin/plugin_coc.vim` | coc.nvim LSP: extensions, generic servers, mappings, node runtime resolution (mise) |
+| `plugin/plugin_minimap.vim` | wfxr/minimap.vim options (code-minimap binary from cargo) |
 | `plugin/plugin_vimai.vim` | vim-ai AI assistant (local ollama endpoint) |
 | `plugin/plugin_ale.vim` | ALE linters for devops filetypes |
 | `plugin/plugin_gutentags.vim` | ctags exclusions |
@@ -230,6 +233,8 @@ See `:help myvim` after generating helptags.
 |---|---|
 | `<F2>` | NERDTree toggle |
 | `<F3>` | Plugin Manager sidebar |
+| `<F4>` | Minimap toggle (needs `code-minimap`: `cargo install code-minimap`) |
+| `<F6>` | Mouse capture toggle (vim ⇄ terminal selection) |
 | `<F7>` | Undotree toggle |
 | `<F8>` | Markdown Preview (markdown buffers) |
 | `<C-p>` | fzf Files |
