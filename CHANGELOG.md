@@ -9,6 +9,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- Minimap restored with the maintained fork: `wfxr/minimap.vim` bound to
+  `<F4>` (the slot freed by the retired vim-minimap; needs the
+  `code-minimap` binary, installed via cargo)
+- `<F6>` mouse capture toggle: `mouse=a` (vim handles the mouse) ⇄
+  `mouse=` (terminal selection = terminal copy/paste); state echoed on
+  toggle
+- OSC52 clipboard: on SSH sessions, yanking feeds the LOCAL clipboard
+  through the OSC52 escape sequence (no `+clipboard` build needed);
+  local sessions stay no-op (terminal selection covers them)
+
 - `coc-snippets` extension declared (`g:coc_global_extensions`): the
   UltiSnips/vim-snippets snippets are now visible in the coc completion
   (bridge was missing: snippets installed but unreachable from coc)

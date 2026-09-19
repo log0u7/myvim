@@ -8,6 +8,8 @@ augroup myvim_mappings
   " IDE panels
   nnoremap <F2> <Cmd>NERDTreeToggle<CR>
   nnoremap <F3> <Cmd>PluginManagerToggle<CR>
+  nnoremap <F4> <Cmd>MinimapToggle<CR>
+  nnoremap <F6> <Cmd>call mouse_clip#toggle()<CR>
   nnoremap <F7> <Cmd>UndotreeToggle<CR>
 
   " Markdown preview (markdown buffers only)
