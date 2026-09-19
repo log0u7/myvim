@@ -4,19 +4,19 @@
 " OSC52: when running over SSH, yanking feeds the LOCAL clipboard with
 " the OSC52 escape sequence (it travels through ssh; no +clipboard
 " build needed - the Ubuntu vim ships with clipboard=0). Local sessions
-" are a no-op: the terminal selection covers that case. Yanks over
-" ~100KB are skipped: terminals truncate large sequences silently.
-
-function! s:osc52(text) abort
-  if len(a:text) > 100000 | return | endif
-  let l:b64 = trim(system('base64 -w0', a:text))
-  call chansend(v:stderr, printf("\e]52;c;%s\a", l:b64))
-endfunction
+" are a no-op: the terminal selection covers that case. Encoding and
+" the size cap live in autoload/mouse_clip.vim (smoke-testable).
+"
+" Opt out entirely: let g:myvim_osc52 = 0 (F9 keeps toggling the mouse).
+" Mind the exposure: over SSH, every yank sends buffer text (secrets
+" included) to the clipboard of the machine you sshed FROM.
 
 augroup myvim_mouse_clip
   autocmd!
-  " Yank -> local clipboard over SSH (OSC52 escape sequence)
+  " Yank -> local clipboard over SSH (OSC52 escape sequence). The
+  " yanked lines themselves (regcontents), not the unnamed register: a
+  " named-register yank ("ayy) must not send stale @" content.
   autocmd TextYankPost * if v:event.operator ==# 'y' && !empty($SSH_CONNECTION)
-        \ | call s:osc52(@")
+        \ | call mouse_clip#osc52(join(v:event.regcontents, "\n"))
         \ | endif
 augroup END

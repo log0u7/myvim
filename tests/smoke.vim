@@ -46,6 +46,21 @@ call s:check('minimap <F4> mapping', maparg('<F4>', 'n') =~# 'MinimapToggle')
 call s:check('minimap :MinimapToggle command', exists(':MinimapToggle') == 2)
 call s:check('mouse toggle <F9> mapping', maparg('<F9>', 'n') =~# 'mouse_clip#toggle')
 call s:check('OSC52 yank autocmd registered', exists('#myvim_mouse_clip#TextYankPost') == 1)
+" OSC52 helpers live in autoload/mouse_clip.vim (smoke-testable). The
+" try/catch keeps installs without them fail-visible instead of raising
+" E117 mid-suite (exists() returns 0 for not-yet-loaded autoload
+" functions, so the call itself is the presence test).
+let s:osc_ok = 0
+try
+  let s:osc_ok = mouse_clip#encode('hello') ==# 'aGVsbG8='
+catch
+endtry
+call s:check('OSC52 encoder + payload', s:osc_ok)
+call s:check('OSC52 cap counts bytes', mouse_clip#encode(repeat("\u00e9", 60000)) ==# '')
+call s:check('OSC52 opt-out default on', mouse_clip#enabled() == 1)
+let g:myvim_osc52 = 0
+call s:check('OSC52 opt-out gate', mouse_clip#enabled() == 0)
+unlet g:myvim_osc52
 call s:check('coc.nvim loaded', exists(':CocInfo') == 2)
 call s:check('coc node binary present', !exists('g:coc_node_path') || filereadable(expand(g:coc_node_path)))
 call s:check('coc extensions declared', join(get(g:, 'coc_global_extensions', []), ',') =~# 'coc-yaml')
