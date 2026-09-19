@@ -289,20 +289,36 @@ coc's bundle uses the RegExp `v` flag (ES2024): any node **>= 20** works,
 older defaults (a distro node 18 for instance) crash the client at startup
 with `SyntaxError: Invalid flags supplied to RegExp constructor 'v'`.
 
-- **mise users**: nothing to maintain. `plugin_coc.vim` resolves the node
-  managed by mise at startup (`mise where node`, default install) and points
-  coc at it when the resolved version is >= 20. The rest of the system keeps
-  its own node (18 here). Bumping node (`mise install node@<newer>` +
-  `mise use node@<newer>`) is picked up on the next vim start.
+**The authoritative fix is system-side: make the PATH node >= 20.**
+coc spawns its service when ITS plugin loads, and `coc.nvim` sorts
+before `myvim` (alphabetical pack order): anything set later (the
+`g:coc_node_path` resolved inside `plugin_coc.vim`) cannot rescue the
+service spawn - it only helps a manual `:CocStart`. The vimrc stays
+generic and minimal; the node runtime is the toolchain's business, not
+the editor config's.
+
+- **Recommended (mise)**: `mise use -g node@22`. Shims make `node` in
+  PATH the 22 LTS for every tool, vim included; nothing to configure in
+  vim. Bumping is a `mise use` away.
 
 - **Everyone else**: put a node >= 20 binary in `PATH`, nothing to
-  configure (`g:coc_node_path` unset means coc uses `node` from `PATH`).
+  configure (coc uses `node` from `PATH`).
 
-- **Custom node**: set `g:coc_node_path` in `~/.vim/vimrc`; it always wins
-  over the mise resolution.
+- **Pin-free escape hatch (coc only)**: `export
+  COC_NODE_PATH="$(mise where node 2>/dev/null)/bin/node"` in the shell
+  rc keeps the system node untouched while coc picks the mise one
+  (coc reads `$COC_NODE_PATH` natively).
 
-The smoke suite (`make smoke`) checks that the resolved binary is present
-(or skipped when `g:coc_node_path` is unset).
+- **Custom node**: `g:coc_node_path` in `~/.vim/vimrc` wins over
+  everything - but mind the load order above: it must be set before
+  plugins load, which is why the vimrc route is only for setups that
+  already edit their vimrc anyway.
+
+`plugin_coc.vim` keeps a resolution + diagnostic warning as a fallback
+(it helps a manual `:CocStart` and explains a dead startup: `[myvim]
+coc: no node >= 20 found ...` in `:messages`). The smoke suite checks
+the resolved binary is present (or skips when `g:coc_node_path` is
+unset).
 
 ## Known issues (historical: YCM era)
 
