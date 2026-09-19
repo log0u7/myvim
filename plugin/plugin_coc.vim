@@ -26,7 +26,7 @@ let g:coc_global_extensions = [
       \   'coc-sh',
       \   'coc-docker',
       \   'coc-toml',
-      \   'coc-ansible',
+      \   '@yaegassy/coc-ansible',
       \   'coc-snippets',
       \   'coc-vimlsp',
       \ ]
