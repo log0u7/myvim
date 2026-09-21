@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.4.0] - 2026-09-21
+
 ### Added
 
 - Minimap restored with the maintained fork: `wfxr/minimap.vim` bound to
@@ -18,18 +20,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - OSC52 clipboard: on SSH sessions, yanking feeds the LOCAL clipboard
   through the OSC52 escape sequence (no `+clipboard` build needed);
   local sessions stay no-op (terminal selection covers them)
-
-- `coc-snippets` extension declared (`g:coc_global_extensions`): the
-  UltiSnips/vim-snippets snippets are now visible in the coc completion
-  (bridge was missing: snippets installed but unreachable from coc)
-- `<C-p>` mapped to fzf `:Files` (reflex preserved after CtrlP removal)
-- `swapdir/` and `undodir/` created automatically at first start
-  (`mkdir` mode 0700: swapfiles can hold sensitive text); no more manual
-  `mkdir -p` in the `~/.vim` quickstart
-- Truecolor detection: `termguicolors` set automatically when `$COLORTERM`
-  announces 24-bit support (tokyonight/onedark degraded without it);
-  obsolete `t_Co=256`/`solarized_termcolors` dropped from the solarized
-  activation block
 - Nix support: `LnL7/vim-nix` (syntax), `nil` LSP via coc generic and
   ALE linters (`deadnix`, `statix`); binaries stay machine-side
 - Terragrunt: `terragrunt.hcl` gets its own `terragrunt` filetype (HCL
@@ -68,22 +58,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Mouse capture toggle moves from `<F6>` to `<F9>`: vdebug owns
   F2-F6/F10 inside a debug session (buffer-local step over/into/out,
   close, breakpoint)
-- `W` command alias delegates to the vim-eunuch `:SudoWrite` instead of
-  the hand-rolled `w !sudo tee` (eunuch was installed and unused here)
-- Node runtime: the hard pin `g:coc_node_path` on
-  `~/.local/share/mise/installs/node/22.23.2/bin/node` is replaced by a
-  startup resolution of the mise-managed node (`mise where node`, default
-  install) when the resolved version is >= 20; `g:coc_node_path` set in
-  the vimrc still wins; PATH node remains the no-mise fallback
-- vim-go unpinned (was `v1.29`, 2023)
-- Mappings sweep: non-recursive `nnoremap` + `<Cmd>` execution
-  (vim_mappings.vim, plugin_coc.vim), `<silent>` made consistent
-- Autocmds wrapped in augroups (myvim_mappings, myvim_nerdtree)
-- ftplugin/yaml.vim: standard `b:did_ftplugin` guard + `b:undo_ftplugin`
-- Swapfiles get unique names (`directory` trailing `//`), obsolete
-  `set nopaste` dropped, `set number` spelling, `$HOME` -> `~` idiom
-- Comment style unified (`" Plugin X` headers, spaces before trailing
-  comments), 3x duplicated mapping-pointer comments removed
 - vim_mappings.vim: plain mappings moved out of the augroup (only
   autocmds belong there) and `<silent>` made uniform across global
   maps (F-keys + fzf, matching F8/coc)
@@ -96,33 +70,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - vim-go: the LSP route (coc-go + gopls) covers the IDE parts and Vim
   ships Go/go.mod syntax; revert = re-add `Plugin 'fatih/vim-go'` in
   the vimrc (optional submodule cleanup: `:PluginManager remove vim-go`)
-- Dead/abandoned plugins (submodules of `~/.vim` + declarative lines):
-  vim-bufferline (~2017, airline covers the tabline), auto-pairs
-  (abandoned 2019), vim-virtualenv (~2015), Dockerfile.vim (stale,
-  coc-docker covers), vim-minimap (stale)
-- CtrlP (doublon: fzf covers files/buffers/git; CtrlP was a kept-alive
-  fork) + config stubs `plugin_ctrlp.vim` and `plugin_minimap.vim`
 
 ### Fixed
 
-- Stale ALE header comment ("YCM owns LSP"; YCM retired 2026-09, coc
-  owns LSP)
-- README quickstart `mapleader` example was a shell-escape trap
-  (`"let mapleader = "\"`: the backslash escapes the closing quote, the
-  leader would silently become `"`); now `"let mapleader = '\'`
-  (README snippet + live vimrc kept byte-identical)
-- doc/myvim.txt: vim_settings.vim no longer described as owning the
-  commands (moved to vim_aliases.vim in 0.2.0)
-- Fugitive placeholder hostname typo (`gilab` -> `gitlab`, inert example
-  for a future private instance; gitlab.com itself needs no config)
-- Insert-mode `<F8>` typed `:MarkdownPreview<CR>` as text instead of
-  running the command (`<Cmd>` fix)
-- Smoke suite aborted with E121 instead of failing cleanly when
-  `g:coc_node_path` is unset
-- CtrlP/NERDTree ignore patterns: unescaped `.swp` matched any `Xswp`
-- `command W/Q` raised E174 on re-source (missing `command!` bang)
-- Dead NERDTree exit autocmd removed (strict subset of the tab-close
-  autocmd; the only-tab case still exits Vim, verified empirically)
 - OSC52 yank sent the unnamed register: a named-register yank (`"ayy`)
   pushed stale `@"` content; the yanked lines (`v:event.regcontents`)
   are sent now
@@ -155,6 +105,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Tests
 
+- Smoke counts linked post-0.3.0: the PR #7 sync round brought the
+  suite from 31 (the re-balance documented under [0.3.0]) to 35; the
+  bullets below track the later rounds
+- Smoke: +4 OSC52 checks (encoder + payload, byte cap, opt-out
+  default, opt-out gate) -> 39
+- Smoke: +4 robustness checks (NERDTree VimEnter guard, actionlint on
+  GH workflow yaml, coc resolution concluded, `Q` no-bang) -> 43
 - Smoke: +5 quality checks (fugitive placeholder commented, global
   maps `<silent>`, swapdir auto-created, undodir prepended with a
   decoy re-source, mouse toggle flips `&mouse`) -> 48
@@ -164,13 +121,94 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Smoke: +6 checks (pyright + helm-ls declared, `<leader>f` ALEFix
   mapping, fixers wired, kubeconform apiVersion scope, helm chart
   template filetype) -> 58
-- Smoke: +4 robustness checks (NERDTree VimEnter guard, actionlint on
-  GH workflow yaml, coc resolution concluded, `Q` no-bang) -> 43
-- Smoke: +4 OSC52 checks (encoder + payload, byte cap, opt-out
-  default, opt-out gate) -> 39
-- Smoke suite re-balanced (count maintained at 31; the post-sync round
-  then brought it to 35, later rounds above track the rest): Minimap
-  `<F4>`, CtrlP
+
+### Documentation
+
+- README: post-install rows (vim-nix auto-install, vim-go removal note)
+  and a toolchain binaries table (nil, deadnix/statix, terragrunt-ls,
+  gopls, xmllint); module table row for `plugin/vim_filetypes.vim`;
+  coc server list updated
+- doc/myvim.txt: `vim_filetypes.vim` structure entry, coc extensions
+  and generic server lists resynchronized
+- README/doc: mouse-clip row and structure list fixed (`F6` -> `<F9>`,
+  stale since the F6 -> F9 move); OSC52 opt-out (`g:myvim_osc52`) and
+  its exposure risk documented
+- README: Diataxis overhaul - filetype coverage table (syntax/LSP/lint/
+  format per filetype), How-to section (format on demand, K8s manifests,
+  Helm charts, GitLab CI deferral), "myvim vs LazyVim" positioning table
+  (capability mapping + conscious Vim 8.2 trade-offs), custom filetype
+  detection ordering explanation, `<leader>f` in the mappings table
+- CHANGELOG: retro section `[0.3.0]` reconstructed verbatim from the
+  v0.3.0 tag snapshot (the section was never written at release time)
+
+## [0.3.0] - 2026-09-18
+
+### Added
+
+- `coc-snippets` extension declared (`g:coc_global_extensions`): the
+  UltiSnips/vim-snippets snippets are now visible in the coc completion
+  (bridge was missing: snippets installed but unreachable from coc)
+- `<C-p>` mapped to fzf `:Files` (reflex preserved after CtrlP removal)
+- `swapdir/` and `undodir/` created automatically at first start
+  (`mkdir` mode 0700: swapfiles can hold sensitive text); no more manual
+  `mkdir -p` in the `~/.vim` quickstart
+- Truecolor detection: `termguicolors` set automatically when `$COLORTERM`
+  announces 24-bit support (tokyonight/onedark degraded without it);
+  obsolete `t_Co=256`/`solarized_termcolors` dropped from the solarized
+  activation block
+
+### Changed
+
+- `W` command alias delegates to the vim-eunuch `:SudoWrite` instead of
+  the hand-rolled `w !sudo tee` (eunuch was installed and unused here)
+- Node runtime: the hard pin `g:coc_node_path` on
+  `~/.local/share/mise/installs/node/22.23.2/bin/node` is replaced by a
+  startup resolution of the mise-managed node (`mise where node`, default
+  install) when the resolved version is >= 20; `g:coc_node_path` set in
+  the vimrc still wins; PATH node remains the no-mise fallback
+- vim-go unpinned (was `v1.29`, 2023)
+- Mappings sweep: non-recursive `nnoremap` + `<Cmd>` execution
+  (vim_mappings.vim, plugin_coc.vim), `<silent>` made consistent
+- Autocmds wrapped in augroups (myvim_mappings, myvim_nerdtree)
+- ftplugin/yaml.vim: standard `b:did_ftplugin` guard + `b:undo_ftplugin`
+- Swapfiles get unique names (`directory` trailing `//`), obsolete
+  `set nopaste` dropped, `set number` spelling, `$HOME` -> `~` idiom
+- Comment style unified (`" Plugin X` headers, spaces before trailing
+  comments), 3x duplicated mapping-pointer comments removed
+
+### Removed
+
+- Dead/abandoned plugins (submodules of `~/.vim` + declarative lines):
+  vim-bufferline (~2017, airline covers the tabline), auto-pairs
+  (abandoned 2019), vim-virtualenv (~2015), Dockerfile.vim (stale,
+  coc-docker covers), vim-minimap (stale)
+- CtrlP (doublon: fzf covers files/buffers/git; CtrlP was a kept-alive
+  fork) + config stubs `plugin_ctrlp.vim` and `plugin_minimap.vim`
+
+### Fixed
+
+- Stale ALE header comment ("YCM owns LSP"; YCM retired 2026-09, coc
+  owns LSP)
+- README quickstart `mapleader` example was a shell-escape trap
+  (`"let mapleader = "\"`: the backslash escapes the closing quote, the
+  leader would silently become `"`); now `"let mapleader = '\'`
+  (README snippet + live vimrc kept byte-identical)
+- doc/myvim.txt: vim_settings.vim no longer described as owning the
+  commands (moved to vim_aliases.vim in 0.2.0)
+- Fugitive placeholder hostname typo (`gilab` -> `gitlab`, inert example
+  for a future private instance; gitlab.com itself needs no config)
+- Insert-mode `<F8>` typed `:MarkdownPreview<CR>` as text instead of
+  running the command (`<Cmd>` fix)
+- Smoke suite aborted with E121 instead of failing cleanly when
+  `g:coc_node_path` is unset
+- CtrlP/NERDTree ignore patterns: unescaped `.swp` matched any `Xswp`
+- `command W/Q` raised E174 on re-source (missing `command!` bang)
+- Dead NERDTree exit autocmd removed (strict subset of the tab-close
+  autocmd; the only-tab case still exits Vim, verified empirically)
+
+### Tests
+
+- Smoke suite re-balanced (count maintained at 31): Minimap `<F4>`, CtrlP
   and auto-pairs checks dropped with their plugins; new checks: fzf
   `<C-p>` mapping, coc-snippets declared, eunuch `:SudoWrite` present,
   undodir auto-created; `coc node binary present` now tolerant (skips
@@ -190,20 +228,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   coc extensions, aliases); structure list completed (vim_aliases.vim,
   plugin_pluginmanager.vim), `<Cmd>` mapping style documented
 - CHANGELOG [0.2.0]: smoke check count corrected (22 -> 24, as released)
-- README/doc: mouse-clip row and structure list fixed (`F6` -> `<F9>`,
-  stale since the F6 -> F9 move); OSC52 opt-out (`g:myvim_osc52`) and
-  its exposure risk documented
-- README: post-install rows (vim-nix auto-install, vim-go removal note)
-  and a toolchain binaries table (nil, deadnix/statix, terragrunt-ls,
-  gopls, xmllint); module table row for `plugin/vim_filetypes.vim`;
-  coc server list updated
-- doc/myvim.txt: `vim_filetypes.vim` structure entry, coc extensions
-  and generic server lists resynchronized
-- README: Diataxis overhaul - filetype coverage table (syntax/LSP/lint/
-  format per filetype), How-to section (format on demand, K8s manifests,
-  Helm charts, GitLab CI deferral), "myvim vs LazyVim" positioning table
-  (capability mapping + conscious Vim 8.2 trade-offs), custom filetype
-  detection ordering explanation, `<leader>f` in the mappings table
 
 ## [0.2.0] - 2026-09-16
 
