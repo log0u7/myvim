@@ -6,9 +6,11 @@ let g:ale_linters = {
       \   'ansible': ['ansible-lint'],
       \   'bash': ['shellcheck'],
       \   'dockerfile': ['hadolint'],
+      \   'nix': ['deadnix', 'statix'],
       \   'python': ['flake8'],
       \   'sh': ['shellcheck'],
       \   'terraform': ['tflint'],
+      \   'xml': ['xmllint'],
       \   'yaml': ['yamllint'],
       \ }
 
