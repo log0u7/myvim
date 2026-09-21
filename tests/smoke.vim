@@ -39,10 +39,11 @@ call s:check('NERDTree <F2> mapping', maparg('<F2>', 'n') =~# 'NERDTreeToggle')
 call s:check('Undotree <F7> mapping', maparg('<F7>', 'n') =~# 'UndotreeToggle')
 call s:check('fzf <C-p> mapping', maparg('<C-p>', 'n') =~# 'Files')
 call s:check('fzf <leader>p mapping', maparg('<leader>p', 'n') =~# 'Files')
+call s:check('ALEFix <leader>f mapping', maparg('<leader>f', 'n') =~# 'ALEFix')
 " every global map goes through <Cmd> (no echo anyway): <silent> stays
 " uniform with the F8/coc maps instead of half the file having it
 let s:silent_ok = 1
-for s:k in ['<F2>', '<F3>', '<F4>', '<F9>', '<F7>', '<C-p>', '<leader>p', '<leader>b', '<leader>g']
+for s:k in ['<F2>', '<F3>', '<F4>', '<F9>', '<F7>', '<C-p>', '<leader>p', '<leader>b', '<leader>g', '<leader>f']
   let s:silent_ok = s:silent_ok && get(maparg(s:k, 'n', 0, 1), 'silent', 0)
 endfor
 call s:check('global maps <silent>', s:silent_ok)
@@ -59,6 +60,13 @@ split /tmp/myvim-smoke-ghwf/.github/workflows/ci.yml
 call s:check('actionlint on GH workflow yaml', get(b:, 'ale_linters', []) == ['actionlint', 'yamllint'])
 q!
 
+" kubeconform understands k8s manifests only: apiVersion first line gets
+" it buffer-locally, compose/argo plain yamls stay yamllint-only
+call writefile(['apiVersion: v1', 'kind: ConfigMap'], '/tmp/myvim-smoke-ft/cm.yml')
+split /tmp/myvim-smoke-ft/cm.yml
+call s:check('kubeconform on k8s manifest yaml', get(b:, 'ale_linters', []) == ['kubeconform', 'yamllint'])
+q!
+
 " custom filetype detection (vim_filetypes.vim)
 call mkdir('/tmp/myvim-smoke-ft', 'p')
 call writefile(['resource "x" "y" {}'], '/tmp/myvim-smoke-ft/terragrunt.hcl')
@@ -68,6 +76,13 @@ q!
 call writefile(['#cloud-config', 'packages: []'], '/tmp/myvim-smoke-ft/user-data')
 split /tmp/myvim-smoke-ft/user-data
 call s:check('cloud-init user-data filetype', &filetype ==# 'yaml')
+q!
+
+" helm chart templates get the helm filetype (helm-ls attaches there)
+call mkdir('/tmp/myvim-smoke-ft/charts/demo/templates', 'p')
+call writefile(['apiVersion: v1'], '/tmp/myvim-smoke-ft/charts/demo/templates/deploy.yaml')
+split /tmp/myvim-smoke-ft/charts/demo/templates/deploy.yaml
+call s:check('helm chart template filetype', &filetype ==# 'helm')
 q!
 
 call s:check('fzf :Files command', exists(':Files') == 2)
@@ -111,10 +126,13 @@ call s:check('coc node binary present', !exists('g:coc_node_path') || filereadab
 call s:check('coc node resolution concluded', exists('g:coc_node_path') == 1 || stridx(execute('messages'), 'no node >= 20') >= 0)
 call s:check('coc extensions declared', join(get(g:, 'coc_global_extensions', []), ',') =~# 'coc-yaml')
 call s:check('coc-snippets extension declared', join(get(g:, 'coc_global_extensions', []), ',') =~# 'coc-snippets')
+call s:check('coc-pyright extension declared', join(get(g:, 'coc_global_extensions', []), ',') =~# 'coc-pyright')
 let s:ls = get(g:coc_user_config, 'languageserver', {})
 call s:check('coc nix/terragrunt servers declared', has_key(s:ls, 'nix') && has_key(s:ls, 'terragrunt'))
-call s:check('ALE nix linters', get(get(g:, 'ale_linters', {}), 'nix', []) == ['deadnix', 'statix'])
+call s:check('coc helm-ls server declared', get(get(s:ls, 'helm', {}), 'command') ==# 'helm_ls')
 unlet s:ls
+call s:check('ALE nix linters', get(get(g:, 'ale_linters', {}), 'nix', []) == ['deadnix', 'statix'])
+call s:check('ALE fixers wired', get(get(g:, 'ale_fixers', {}), 'terraform', []) == ['terraform'] && get(get(g:, 'ale_fixers', {}), 'sh', []) == ['shfmt'] && get(get(g:, 'ale_fixers', {}), 'nix', []) == ['alejandra'])
 
 " aliases, doc and remaining wiring
 call s:check('aliases W and Q', exists(':W') == 2 && exists(':Q') == 2)

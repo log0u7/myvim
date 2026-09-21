@@ -25,7 +25,11 @@ Files:
     vim_filetypes.vim       Custom filetype detection: cloud-init user-data
                             (#cloud-config -> yaml), terragrunt.hcl ->
                             terragrunt (HCL syntax alias), LXC container
-                            config (/var/lib/lxc/*/config -> sh)
+                            config (/var/lib/lxc/*/config -> sh), Helm
+                            chart templates -> helm (yaml alias)
+    plugin_ale.vim          ALE: devops linters, on-demand fixers
+                            (<leader>f, ale_fix_on_save stays 0), custom
+                            kubeconform linter (apiVersion-scoped yamls)
     plugin_pluginmanager.vim  vim-plugin-manager: vimrc path, sidebar width
     plugin_coc.vim          coc.nvim LSP: extensions, generic servers, mappings,
                             node runtime resolution (mise)
@@ -34,7 +38,9 @@ Files:
     plugin_ale.vim          ALE linters for devops filetypes
     plugin_gutentags.vim    ctags exclusions
     plugin_<name>.vim       One file per configured plugin
+    syntax/                 Filetype syntax (helm.vim: yaml alias)
     ftplugin/yaml.vim       Filetype-specific settings (2-space indent)
+    ftplugin/{helm,terragrunt}.vim  Same for those filetypes
 
 Essential settings that must run before plugins load (mapleader, encoding,
 filetype, syntax) stay in `~/.vim/vimrc`.
@@ -44,11 +50,12 @@ COC.NVIM (LSP)                                          *myvim-coc*
 YouCompleteMe was retired on 2026-09-16; coc.nvim provides generic LSP.
 Extensions are declared in `plugin/plugin_coc.vim` via
 `g:coc_global_extensions` (yaml, json, git, sh, docker, toml, ansible,
-snippets, vimlsp, go) and auto-install at startup (coc-snippets bridges the
-UltiSnips/vim-snippets snippets into the coc completion). Generic servers
-(terraform-ls, nil, terragrunt-ls) are configured through
-`g:coc_user_config`. ALE stays in charge of the devops linters with
-`ale_disable_lsp=1`.
+snippets, vimlsp, go, pyright) and auto-install at startup (coc-snippets
+bridges the UltiSnips/vim-snippets snippets into the coc completion).
+Generic servers (terraform-ls, nil, terragrunt-ls, helm_ls) are
+configured through `g:coc_user_config`. ALE stays in charge of the
+devops linters with `ale_disable_lsp=1`; formatting runs on demand
+(`<leader>f` = `:ALEFix`, per-filetype fixers; never on save).
 
 LSP mappings: `gd` definition, `gr` references, `gi` implementation,
 `K` hover, `[g`/`]g` diagnostic navigation, `<leader>rn` rename,
@@ -89,6 +96,7 @@ MAPPINGS                                                *myvim-mappings*
     <leader>p       fzf Files
     <leader>b       fzf Buffers
     <leader>g       fzf Git files
+    <leader>f       ALE format on demand (:ALEFix; save stays untouched)
 
 vdebug (Xdebug) owns F2-F6/F10 inside a debug session (step over, step
 into, step out, close, breakpoint): its buffer-local mappings win over

@@ -27,3 +27,6 @@ nnoremap <silent> <C-p> <Cmd>Files<CR>
 nnoremap <silent> <leader>p <Cmd>Files<CR>
 nnoremap <silent> <leader>b <Cmd>Buffers<CR>
 nnoremap <silent> <leader>g <Cmd>GFiles<CR>
+
+" ALE: explicit formatting on demand (ale_fix_on_save stays 0 on purpose)
+nnoremap <silent> <leader>f <Cmd>ALEFix<CR>
