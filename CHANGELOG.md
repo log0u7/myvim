@@ -45,6 +45,23 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - ALE `xml` linter (`xmllint`) for libvirt domain files
 - `coc-go` extension: gopls replaces vim-go's tooling (completion,
   diagnostics, go-to-definition through the same coc setup)
+- `coc-pyright` extension: python LSP (types, go-to-definition,
+  refactors); flake8 stays in charge of style linting
+- On-demand formatting: ALE fixers (`sh`/`bash` -> shfmt, `terraform` ->
+  terraform fmt, `nix` -> alejandra) behind `<leader>f` (`:ALEFix`);
+  `ale_fix_on_save` stays 0 on purpose
+- Helm stack: chart templates (`*/charts/*/templates/*.y*ml`,
+  `*.gotmpl`) get their own `helm` filetype (yaml syntax alias) and
+  `helm_ls` (coc generic, `Chart.yaml` root) - plain-yaml tooling stays
+  out of templates
+- kubeconform as a custom ALE linter: k8s manifests scoped by the
+  `apiVersion:` first line (compose, ansible and workflow yamls never
+  run it), stdin-validated (`-strict -ignore-missing-schemas`), JSON
+  output parsed into buffer-anchored diagnostics. GitLab CI lint
+  deferred: ALE's builtin gitlablint expects an interface (`gll -p`)
+  no maintained tool provides (`torchiaf/gll` gone,
+  `elijah-roberts/gitlab-lint` rejects `-p` as ambiguous);
+  `.gitlab-ci*.yml` stays yamllint-only until upstream aligns
 
 ### Changed
 
@@ -144,6 +161,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Smoke: +4 checks (terragrunt.hcl -> terragrunt filetype, cloud-init
   user-data -> yaml, coc nix/terragrunt servers declared, ALE nix
   linters) -> 52
+- Smoke: +6 checks (pyright + helm-ls declared, `<leader>f` ALEFix
+  mapping, fixers wired, kubeconform apiVersion scope, helm chart
+  template filetype) -> 58
 - Smoke: +4 robustness checks (NERDTree VimEnter guard, actionlint on
   GH workflow yaml, coc resolution concluded, `Q` no-bang) -> 43
 - Smoke: +4 OSC52 checks (encoder + payload, byte cap, opt-out
@@ -179,6 +199,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   coc server list updated
 - doc/myvim.txt: `vim_filetypes.vim` structure entry, coc extensions
   and generic server lists resynchronized
+- README: Diataxis overhaul - filetype coverage table (syntax/LSP/lint/
+  format per filetype), How-to section (format on demand, K8s manifests,
+  Helm charts, GitLab CI deferral), "myvim vs LazyVim" positioning table
+  (capability mapping + conscious Vim 8.2 trade-offs), custom filetype
+  detection ordering explanation, `<leader>f` in the mappings table
 
 ## [0.2.0] - 2026-09-16
 

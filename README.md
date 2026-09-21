@@ -176,6 +176,50 @@ by MyVim at first start; only their `.gitignore` entries are needed.
 | terragrunt | terragrunt-ls | binary from gruntwork-io/terragrunt-ls releases into `~/.local/bin` |
 | go | coc-go (gopls) | `go install golang.org/x/tools/gopls@latest` |
 | xml (libvirt domains) | ALE xmllint | usually already in the system (`libxml2-utils`) |
+| helm | helm_ls | `mise use -g github:mrjosh/helm-ls` |
+| k8s manifests | kubeconform | `mise use -g github:yannh/kubeconform` |
+| python | coc-pyright (pyright bundled) | nothing: the coc extension ships pyright |
+
+## How-to
+
+### Format files
+
+Formatting runs on demand only (`ale_fix_on_save = 0` on purpose: no
+surprise diffs at save time):
+
+- `<leader>f` or `:ALEFix` in any buffer
+- fixers wired: `sh`/`bash` -> `shfmt`, `terraform` -> `terraform fmt`,
+  `nix` -> `alejandra`
+- add one: extend `g:ale_fixers` in `plugin/plugin_ale.vim`, fixers live
+  in ALE itself (157 available, `:ALEInfo` lists the fixers of the
+  current buffer)
+
+### Lint Kubernetes manifests
+
+A yaml buffer whose first line starts with `apiVersion:` gets
+`kubeconform` buffer-locally (plus `yamllint`); every other yaml
+(compose, ansible, plain config) never runs it. Flags used:
+`-strict -ignore-missing-schemas -output json` (custom CRDs are skipped
+instead of erroring). Scope rule lives in the `myvim_ale` augroup of
+`plugin/plugin_ale.vim`.
+
+### Edit Helm charts
+
+Chart templates get their own `helm` filetype (detected on
+`*/charts/*/templates/*.y*ml` and `*.gotmpl`), so `helm_ls` attaches to
+them (chart root: `Chart.yaml`) and plain-yaml tooling stays out of
+templates that are not valid yaml: no `yamllint`, no yaml LSP on
+templated files. Outside a chart, `helm_ls` falls back to `.git` as
+workspace root.
+
+### GitLab CI lint (deferred)
+
+ALE ships a `gitlablint` linter but its builtin interface expects a CLI
+invocation (`gll -p <file>`) no maintained tool provides: the referenced
+`torchiaf/gll` is gone and `elijah-roberts/gitlab-lint` (the current
+`gll`, python) rejects `-p` as ambiguous (`--path`/`--project`). Until a
+binary matches the expected interface, `.gitlab-ci*.yml` files stay
+`yamllint`-only. Revisit when upstream ALE or the tool aligns.
 
 ## Enable a colorscheme
 
@@ -226,18 +270,47 @@ Makefile          make smoke
 | `plugin/plugin_coc.vim` | coc.nvim LSP: extensions, generic servers, mappings, node runtime resolution (mise) |
 | `plugin/plugin_minimap.vim` | wfxr/minimap.vim options (code-minimap binary from cargo) |
 | `plugin/plugin_vimai.vim` | vim-ai AI assistant (local ollama endpoint) |
-| `plugin/plugin_ale.vim` | ALE linters for devops filetypes |
+| `plugin/plugin_ale.vim` | ALE: linters per filetype, on-demand fixers (`<leader>f`), custom kubeconform linter + apiVersion scoping |
 | `plugin/plugin_gutentags.vim` | ctags exclusions |
 | `plugin/plugin_fugitive.vim` | GitLab domains + secrets-file pointer |
 | `plugin/plugin_nerdtree.vim` | NERDTree options and autocmds |
 | `plugin/plugin_markdownpreview.vim` | markdown-preview options |
 | `plugin/plugin_<name>.vim` | One file per configured plugin |
-| `ftplugin/yaml.vim` | Filetype settings (2-space indent) |
+| `syntax/helm.vim`, `ftplugin/helm.vim` | Helm chart templates (yaml alias + 2-space) |
+| `ftplugin/yaml.vim`, `ftplugin/terragrunt.vim` | Filetype settings (2-space indent) |
 
 Essential settings that must run before plugins load (mapleader, encoding,
 filetype, syntax) stay in `~/.vim/vimrc`. All key mappings are centralized
 in `plugin/vim_mappings.vim` (and `plugin/plugin_coc.vim` for the LSP ones).
 See `:help myvim` after generating helptags.
+
+## Filetype coverage
+
+One row per devops filetype: what syntax, which LSP, which linters and
+which fixer run on it, and the binaries each needs. Everything below is
+wired in `plugin_coc.vim` (LSP), `plugin_ale.vim` (lint + format) and
+`vim_filetypes.vim` (detection).
+
+| Filetype | Syntax | LSP (coc) | Lint (ALE) | Format (ALEFix) |
+|---|---|---|---|---|
+| yaml (+ ansible) | builtin, ansible-vim | coc-yaml, coc-ansible | yamllint; actionlint (GH workflows); kubeconform (manifests) | - |
+| terraform | vim-hashicorp-tools, vim-hcl | terraform-ls | tflint | terraform fmt |
+| hcl (vault policies, tfvars) | vim-hcl | terraform-ls | tflint | terraform fmt |
+| terragrunt (`terragrunt.hcl`) | HCL alias | terragrunt-ls | - | - |
+| nix | vim-nix | nil | deadnix, statix | alejandra |
+| helm (chart templates) | yaml alias | helm_ls | - | - |
+| sh / bash | builtin | coc-sh | shellcheck | shfmt |
+| python | builtin | coc-pyright (pyright bundled) | flake8 | - |
+| go | builtin | coc-go (gopls) | - | gofmt |
+| dockerfile | builtin | coc-docker | hadolint | - |
+| json / toml | builtin | coc-json, coc-toml | json (LSP diagnostics) | - |
+| xml (libvirt domains) | builtin | - | xmllint | - |
+| cloud-init user-data | yaml | coc-yaml | yamllint | - |
+
+Scope rules keep the generic linters honest: actionlint only on
+`.github/workflows/`, kubeconform only on `apiVersion:` first lines.
+Non-devops filetypes (vim, markdown, gitcommit...) come from the coc
+extension list.
 
 ## Key mappings
 
@@ -252,6 +325,7 @@ See `:help myvim` after generating helptags.
 | `F2/F3/F4/F6/F10` (debug session) | vdebug: step over / step into / step out / close / breakpoint (buffer-local, they win inside a debug session) |
 | `<C-p>` | fzf Files |
 | `<leader>p` / `<leader>b` / `<leader>g` | fzf Files / Buffers / Git files |
+| `<leader>f` | ALE format on demand (`:ALEFix`; save stays untouched) |
 | `gd` / `gr` / `gi` / `K` | coc.nvim: definition / references / implementation / hover |
 | `[g` / `]g` | coc.nvim: previous / next diagnostic |
 | `<leader>rn` / `<leader>ca` | coc.nvim: rename / code action |
@@ -285,6 +359,41 @@ Everything else - options, mappings, per-plugin settings - lives in the
 MyVim plugin, so the vimrc stays declarative: settings evolve in the plugin
 repo, plugin versions are pinned as submodules, and `~/.vim` remains a
 thin, reproducible list.
+
+## Positioning: myvim vs LazyVim
+
+myvim is a Vim 8.2+ config, LazyVim is a Neovim distribution: same
+workflows, different runtimes. The honest mapping, capability by
+capability:
+
+| Concept | LazyVim | myvim |
+|---|---|---|
+| LSP + completion | nvim-lspconfig, Mason, blink | coc.nvim (extensions + generic servers) |
+| Tool installs | Mason | mise / nix / cargo / go (system-side, see post-install) |
+| Fuzzy finder | Telescope | fzf |
+| File tree | neo-tree | NERDTree (+ git plugin) |
+| Git signs | gitsigns | signify |
+| Diagnostics list | Trouble | `:CocList diagnostics` (`<leader>d`) |
+| Formatting | conform.nvim | `:ALEFix` (`<leader>f`) |
+| Syntax highlighting | treesitter | regex syntax plugins (Vim 8.2 has no treesitter) |
+| Debug adapters | nvim-dap | vdebug (PHP/Xdebug; no general DAP on Vim) |
+| Key discovery | which-key | this README + `:help myvim` |
+
+Conscious trade-offs, not oversights: treesitter and nvim-dap have no
+Vim 8.2 port, and the regex syntax plugins above cover the devops
+grammars this IDE needs. Everything else maps one to one.
+
+## Custom filetype detection: the ordering gotcha
+
+`terragrunt.hcl`, cloud-init user-data, LXC configs and Helm templates
+are detected in `plugin/vim_filetypes.vim`. The terragrunt rule hooks
+`FileType hcl`, NOT `BufRead`: pack plugins load after the vimrc, so
+ftdetect files (vim-hcl and its unconditional `set filetype=hcl`) are
+sourced AFTER this plugin defines its autocmds - a BufRead `set
+filetype=terragrunt` would fire first and get overwritten. FileType
+handlers are defined once and fire whenever the hcl filetype lands,
+however late. The smoke suite pins this behavior (terragrunt filetype
+check) so a refactor cannot silently regress it.
 
 ## coc.nvim: LSP engine (YouCompleteMe retired)
 
