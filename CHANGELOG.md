@@ -30,6 +30,21 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   announces 24-bit support (tokyonight/onedark degraded without it);
   obsolete `t_Co=256`/`solarized_termcolors` dropped from the solarized
   activation block
+- Nix support: `LnL7/vim-nix` (syntax), `nil` LSP via coc generic and
+  ALE linters (`deadnix`, `statix`); binaries stay machine-side
+- Terragrunt: `terragrunt.hcl` gets its own `terragrunt` filetype (HCL
+  syntax alias) so `terragrunt-ls` can attach without claiming every
+  plain HCL file (vault policies, terraform blocks keep `hcl` and
+  terraform-ls). The rule hooks `FileType hcl` instead of BufRead:
+  pack plugins load after the vimrc, so ftdetect files (vim-hcl and
+  its unconditional `set filetype=hcl`) are sourced later and a
+  BufRead rule would be overridden
+- Custom filetype detection module `plugin/vim_filetypes.vim`: cloud-init
+  user-data (`#cloud-config` first line -> yaml) and LXC container
+  config (`/var/lib/lxc/*/config` -> sh)
+- ALE `xml` linter (`xmllint`) for libvirt domain files
+- `coc-go` extension: gopls replaces vim-go's tooling (completion,
+  diagnostics, go-to-definition through the same coc setup)
 
 ### Changed
 
@@ -61,6 +76,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Removed
 
+- vim-go: the LSP route (coc-go + gopls) covers the IDE parts and Vim
+  ships Go/go.mod syntax; revert = re-add `Plugin 'fatih/vim-go'` in
+  the vimrc (optional submodule cleanup: `:PluginManager remove vim-go`)
 - Dead/abandoned plugins (submodules of `~/.vim` + declarative lines):
   vim-bufferline (~2017, airline covers the tabline), auto-pairs
   (abandoned 2019), vim-virtualenv (~2015), Dockerfile.vim (stale,
@@ -123,6 +141,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Smoke: +5 quality checks (fugitive placeholder commented, global
   maps `<silent>`, swapdir auto-created, undodir prepended with a
   decoy re-source, mouse toggle flips `&mouse`) -> 48
+- Smoke: +4 checks (terragrunt.hcl -> terragrunt filetype, cloud-init
+  user-data -> yaml, coc nix/terragrunt servers declared, ALE nix
+  linters) -> 52
 - Smoke: +4 robustness checks (NERDTree VimEnter guard, actionlint on
   GH workflow yaml, coc resolution concluded, `Q` no-bang) -> 43
 - Smoke: +4 OSC52 checks (encoder + payload, byte cap, opt-out
@@ -152,6 +173,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - README/doc: mouse-clip row and structure list fixed (`F6` -> `<F9>`,
   stale since the F6 -> F9 move); OSC52 opt-out (`g:myvim_osc52`) and
   its exposure risk documented
+- README: post-install rows (vim-nix auto-install, vim-go removal note)
+  and a toolchain binaries table (nil, deadnix/statix, terragrunt-ls,
+  gopls, xmllint); module table row for `plugin/vim_filetypes.vim`;
+  coc server list updated
+- doc/myvim.txt: `vim_filetypes.vim` structure entry, coc extensions
+  and generic server lists resynchronized
 
 ## [0.2.0] - 2026-09-16
 

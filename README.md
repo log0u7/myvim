@@ -126,7 +126,7 @@ PluginBegin
   Plugin 'hashivim/vim-hashicorp-tools'
   Plugin 'jvirtanen/vim-hcl'
   Plugin 'Glench/Vim-Jinja2-Syntax'
-  Plugin 'fatih/vim-go'
+  Plugin 'LnL7/vim-nix'
   " --- ai (local ollama via OpenAI-compatible API; optional: copilot, codeium) ---
   Plugin 'madox2/vim-ai'
   Plugin 'github/copilot.vim', {'load': 'opt'}
@@ -161,10 +161,21 @@ by MyVim at first start; only their `.gitignore` entries are needed.
 
 | Plugin | Action |
 |---|---|
-| coc.nvim | Nothing to build: declared extensions (`g:coc_global_extensions` in `plugin_coc.vim`) auto-install at first start. Generic LSP servers (terraform-ls) are configured in the same file and need their binary in PATH |
+| coc.nvim | Nothing to build: declared extensions (`g:coc_global_extensions` in `plugin_coc.vim`) auto-install at first start. Generic LSP servers (terraform-ls, nil, terragrunt-ls) are configured in the same file and need their binary in PATH |
 | YouCompleteMe (retired) | See [Known issues](#known-issues-historical-ycm-era): the manager clones plugins non-recursively, so YCM needed a manual `submodule update --init --recursive` before `install.py --all` |
 | markdown-preview.nvim | Run `:call mkdp#util#install()` once (downloads prebuilt assets, no npm needed) |
 | fzf | Nothing to do: `{'dir': 'fzf', 'exec': './install --all'}` installs the binary |
+| vim-nix | Nothing to do: auto-installs at first start (missing plugins are installed as submodules) |
+| vim-go (removed) | Optional cleanup: `:PluginManager remove vim-go` (the LSP route via coc-go + gopls replaces it) |
+
+### Toolchain binaries (new filetypes)
+
+| Filetype | LSP / linters | Binary install |
+|---|---|---|
+| nix | nil + ALE deadnix, statix | `nil` static binary from GitHub releases into `~/.local/bin`; `cargo install deadnix statix` |
+| terragrunt | terragrunt-ls | binary from gruntwork-io/terragrunt-ls releases into `~/.local/bin` |
+| go | coc-go (gopls) | `go install golang.org/x/tools/gopls@latest` |
+| xml (libvirt domains) | ALE xmllint | usually already in the system (`libxml2-utils`) |
 
 ## Enable a colorscheme
 
@@ -211,6 +222,7 @@ Makefile          make smoke
 | `plugin/vim_mappings.vim` | Every global key mapping (single audit point) |
 | `plugin/vim_mouse_clip.vim` | Mouse capture toggle (F9) and OSC52 clipboard over SSH (`g:myvim_osc52 = 0` to opt out) |
 | `plugin/vim_colorscheme.vim` | Colorscheme activation mechanism |
+| `plugin/vim_filetypes.vim` | Custom filetype detection: cloud-init user-data (`#cloud-config`), `terragrunt.hcl`, LXC container config |
 | `plugin/plugin_coc.vim` | coc.nvim LSP: extensions, generic servers, mappings, node runtime resolution (mise) |
 | `plugin/plugin_minimap.vim` | wfxr/minimap.vim options (code-minimap binary from cargo) |
 | `plugin/plugin_vimai.vim` | vim-ai AI assistant (local ollama endpoint) |

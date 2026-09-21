@@ -58,10 +58,15 @@ let g:coc_global_extensions = [
       \   '@yaegassy/coc-ansible',
       \   'coc-snippets',
       \   'coc-vimlsp',
+      \   'coc-go',
       \ ]
 
 " Generic LSP servers that have no coc extension (binary must be in PATH):
-"   terraform-ls  https://github.com/hashicorp/terraform-ls
+"   terraform-ls    https://github.com/hashicorp/terraform-ls
+"   nil             https://github.com/oxalica/nil
+"   terragrunt-ls   https://github.com/gruntwork-io/terragrunt-ls
+" terragrunt files get their own filetype (vim_filetypes.vim) so
+" terragrunt-ls does not claim every plain HCL file.
 let g:coc_user_config = {
       \   'languageserver': {
       \     'terraform': {
@@ -69,6 +74,16 @@ let g:coc_user_config = {
       \       'args': ['serve'],
       \       'filetypes': ['terraform', 'hcl'],
       \       'rootPatterns': ['.terraform', '.git'],
+      \     },
+      \     'nix': {
+      \       'command': 'nil',
+      \       'filetypes': ['nix'],
+      \     },
+      \     'terragrunt': {
+      \       'command': 'terragrunt-ls',
+      \       'args': ['serve'],
+      \       'filetypes': ['terragrunt'],
+      \       'rootPatterns': ['.terragrunt-cache', '.git'],
       \     },
       \   },
       \ }

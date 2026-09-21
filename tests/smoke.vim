@@ -58,6 +58,18 @@ call writefile(['on: push'], '/tmp/myvim-smoke-ghwf/.github/workflows/ci.yml')
 split /tmp/myvim-smoke-ghwf/.github/workflows/ci.yml
 call s:check('actionlint on GH workflow yaml', get(b:, 'ale_linters', []) == ['actionlint', 'yamllint'])
 q!
+
+" custom filetype detection (vim_filetypes.vim)
+call mkdir('/tmp/myvim-smoke-ft', 'p')
+call writefile(['resource "x" "y" {}'], '/tmp/myvim-smoke-ft/terragrunt.hcl')
+split /tmp/myvim-smoke-ft/terragrunt.hcl
+call s:check('terragrunt.hcl filetype', &filetype ==# 'terragrunt')
+q!
+call writefile(['#cloud-config', 'packages: []'], '/tmp/myvim-smoke-ft/user-data')
+split /tmp/myvim-smoke-ft/user-data
+call s:check('cloud-init user-data filetype', &filetype ==# 'yaml')
+q!
+
 call s:check('fzf :Files command', exists(':Files') == 2)
 call s:check('Tagbar command', exists(':TagbarToggle') == 2)
 call s:check('Vimwiki command', exists(':VimwikiIndex') == 2)
@@ -99,6 +111,10 @@ call s:check('coc node binary present', !exists('g:coc_node_path') || filereadab
 call s:check('coc node resolution concluded', exists('g:coc_node_path') == 1 || stridx(execute('messages'), 'no node >= 20') >= 0)
 call s:check('coc extensions declared', join(get(g:, 'coc_global_extensions', []), ',') =~# 'coc-yaml')
 call s:check('coc-snippets extension declared', join(get(g:, 'coc_global_extensions', []), ',') =~# 'coc-snippets')
+let s:ls = get(g:coc_user_config, 'languageserver', {})
+call s:check('coc nix/terragrunt servers declared', has_key(s:ls, 'nix') && has_key(s:ls, 'terragrunt'))
+call s:check('ALE nix linters', get(get(g:, 'ale_linters', {}), 'nix', []) == ['deadnix', 'statix'])
+unlet s:ls
 
 " aliases, doc and remaining wiring
 call s:check('aliases W and Q', exists(':W') == 2 && exists(':Q') == 2)
