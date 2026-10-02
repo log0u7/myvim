@@ -159,6 +159,13 @@ by MyVim at first start; only their `.gitignore` entries are needed.
 
 ## Post-install steps
 
+The repo ships a `mise.toml` listing every external binary this config
+consumes (node for coc, LSP servers, ALE linters/fixers, fzf). Bootstrap
+a machine with `cd myvim && mise install`. Binaries mise cannot manage
+(vim, make, git, xmllint, base64, universal-ctags, ollama, tmux, php +
+xdebug, Nerd Font) stay system-side; the per-tool commands below remain
+valid alternatives.
+
 | Plugin | Action |
 |---|---|
 | coc.nvim | Nothing to build: declared extensions (`g:coc_global_extensions` in `plugin_coc.vim`) auto-install at first start. Generic LSP servers (terraform-ls, nil, terragrunt-ls) are configured in the same file and need their binary in PATH |

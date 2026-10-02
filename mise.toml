@@ -1,0 +1,36 @@
+# mise.toml - external tool dependencies of MyVim (editor-side tooling)
+# Bootstrap a machine: cd myvim && mise install
+# Tools resolve via mise shims once installed; the editor runs wherever vim runs.
+# NOT mise-manageable (system packages / services):
+#   vim >= 8.2, make, git, xmllint (libxml2-utils), base64 (coreutils),
+#   universal-ctags, ollama (service), tmux, php + xdebug, Nerd Font
+
+[tools]
+node = "22"                                     # coc.nvim runtime (>= 20 required)
+
+# LSP servers (coc generic sources + coc-go)
+"go:golang.org/x/tools/gopls" = "latest"
+"github:mrjosh/helm-ls" = "latest"
+"github:gruntwork-io/terragrunt-ls" = "latest"
+"github:yannh/kubeconform" = "latest"
+"github:oxalica/nil" = "latest"                 # nix LSP
+terraform-ls = "latest"                         # terraform/hcl LSP
+
+# Linters (ALE)
+shellcheck = "latest"
+yamllint = "latest"
+hadolint = "latest"
+tflint = "latest"
+actionlint = "latest"
+"pipx:ansible-lint" = "latest"
+"pipx:flake8" = "latest"
+"cargo:deadnix" = "latest"
+"cargo:statix" = "latest"
+
+# Formatters (ALEFix)
+shfmt = "latest"
+"github:kamadorueda/alejandra" = "latest"
+terraform = "latest"                            # terraform fmt
+
+# Editor tooling
+fzf = "latest"
