@@ -21,7 +21,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - `mise.toml`: manifest of the external binaries this config consumes
   (node for coc, LSP servers, ALE linters/fixers, fzf); bootstrap a
-  machine with `cd myvim && mise install`. System-side binaries (vim,
+  machine with `cd myvim && mise install`. Tool versions are pinned;
+  bump by editing the version and committing. System-side binaries (vim,
   make, git, xmllint, base64, universal-ctags, nil via nixpkgs, ollama,
   tmux, php + xdebug, Nerd Font) stay documented in README post-install
 
