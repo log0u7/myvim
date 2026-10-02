@@ -162,9 +162,9 @@ by MyVim at first start; only their `.gitignore` entries are needed.
 The repo ships a `mise.toml` listing every external binary this config
 consumes (node for coc, LSP servers, ALE linters/fixers, fzf). Bootstrap
 a machine with `cd myvim && mise install`. Binaries mise cannot manage
-(vim, make, git, xmllint, base64, universal-ctags, ollama, tmux, php +
-xdebug, Nerd Font) stay system-side; the per-tool commands below remain
-valid alternatives.
+(vim, make, git, xmllint, base64, universal-ctags, nil via nixpkgs,
+ollama, tmux, php + xdebug, Nerd Font) stay system-side; the per-tool
+commands below remain valid alternatives.
 
 | Plugin | Action |
 |---|---|
@@ -179,7 +179,7 @@ valid alternatives.
 
 | Filetype | LSP / linters | Binary install |
 |---|---|---|
-| nix | nil + ALE deadnix, statix | `nil` static binary from GitHub releases into `~/.local/bin`; `cargo install deadnix statix` |
+| nix | nil + ALE deadnix, statix | `nix profile install nixpkgs#nil` (GitHub releases ship no binaries); `deadnix`/`statix` via `mise.toml` |
 | terragrunt | terragrunt-ls | binary from gruntwork-io/terragrunt-ls releases into `~/.local/bin` |
 | go | coc-go (gopls) | `go install golang.org/x/tools/gopls@latest` |
 | xml (libvirt domains) | ALE xmllint | usually already in the system (`libxml2-utils`) |

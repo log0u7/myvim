@@ -3,17 +3,18 @@
 # Tools resolve via mise shims once installed; the editor runs wherever vim runs.
 # NOT mise-manageable (system packages / services):
 #   vim >= 8.2, make, git, xmllint (libxml2-utils), base64 (coreutils),
-#   universal-ctags, ollama (service), tmux, php + xdebug, Nerd Font
+#   universal-ctags, nil (nix: nix profile install nixpkgs#nil; releases
+#   ship no binaries), ollama (service), tmux, php + xdebug, Nerd Font
 
 [tools]
 node = "22"                                     # coc.nvim runtime (>= 20 required)
+pipx = "latest"                                 # backend for pipx:* tools below
 
 # LSP servers (coc generic sources + coc-go)
 "go:golang.org/x/tools/gopls" = "latest"
 "github:mrjosh/helm-ls" = "latest"
 "github:gruntwork-io/terragrunt-ls" = "latest"
 "github:yannh/kubeconform" = "latest"
-"github:oxalica/nil" = "latest"                 # nix LSP
 terraform-ls = "latest"                         # terraform/hcl LSP
 
 # Linters (ALE)
