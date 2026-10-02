@@ -62,13 +62,13 @@ q!
 
 " kubeconform understands k8s manifests only: apiVersion first line gets
 " it buffer-locally, compose/argo plain yamls stay yamllint-only
+call mkdir('/tmp/myvim-smoke-ft', 'p')
 call writefile(['apiVersion: v1', 'kind: ConfigMap'], '/tmp/myvim-smoke-ft/cm.yml')
 split /tmp/myvim-smoke-ft/cm.yml
 call s:check('kubeconform on k8s manifest yaml', get(b:, 'ale_linters', []) == ['kubeconform', 'yamllint'])
 q!
 
 " custom filetype detection (vim_filetypes.vim)
-call mkdir('/tmp/myvim-smoke-ft', 'p')
 call writefile(['resource "x" "y" {}'], '/tmp/myvim-smoke-ft/terragrunt.hcl')
 split /tmp/myvim-smoke-ft/terragrunt.hcl
 call s:check('terragrunt.hcl filetype', &filetype ==# 'terragrunt')

@@ -33,7 +33,7 @@ Files:
     plugin_pluginmanager.vim  vim-plugin-manager: vimrc path, sidebar width
     plugin_coc.vim          coc.nvim LSP: extensions, generic servers, mappings,
                             node runtime resolution (mise)
-    plugin_minimap.vim      wfxr/minimap.vim options (code-minimap binary)
+    plugin_minimap.vim      Minimap stub (pure vim, no external binary)
     plugin_vimai.vim        vim-ai AI assistant (local ollama endpoint)
     plugin_ale.vim          ALE linters for devops filetypes
     plugin_gutentags.vim    ctags exclusions
@@ -86,8 +86,7 @@ MAPPINGS                                                *myvim-mappings*
 
     <F2>            NERDTree toggle
     <F3>            Plugin Manager sidebar
-    <F4>            Minimap toggle (wfxr/minimap.vim; needs the
-                    code-minimap binary: cargo install code-minimap)
+    <F4>            Minimap toggle (severin-lemaignan/vim-minimap, pure vim)
     <F9>            Mouse capture toggle: vim (visual selection) ⇄
                     terminal (native selection = terminal copy/paste)
     <F7>            Undotree toggle

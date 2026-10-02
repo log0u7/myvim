@@ -7,6 +7,24 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed
+
+- Minimap reverted to `severin-lemaignan/vim-minimap` (the pre-0.4.0
+  plugin): the wfxr fork renders monochrome density glyphs with no
+  syntax colors, and its git coloring only fires on files with
+  uncommitted changes, so it showed nothing more than the pure-vim
+  version while requiring the `code-minimap` binary. The restored plugin
+  renders the shrunk source with syntax highlighting and needs no
+  external binary. F4 and `:MinimapToggle` unchanged
+
+### Added
+
+- `mise.toml`: manifest of the external binaries this config consumes
+  (node for coc, LSP servers, ALE linters/fixers, fzf); bootstrap a
+  machine with `cd myvim && mise install`. System-side binaries (vim,
+  make, git, xmllint, base64, universal-ctags, nil via nixpkgs, ollama,
+  tmux, php + xdebug, Nerd Font) stay documented in README post-install
+
 ## [0.4.0] - 2026-09-21
 
 ### Added
