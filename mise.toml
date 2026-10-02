@@ -1,6 +1,7 @@
 # mise.toml - external tool dependencies of MyVim (editor-side tooling)
 # Bootstrap a machine: cd myvim && mise install
 # Tools resolve via mise shims once installed; the editor runs wherever vim runs.
+# Versions are pinned: bump by editing here and committing.
 # NOT mise-manageable (system packages / services):
 #   vim >= 8.2, make, git, xmllint (libxml2-utils), base64 (coreutils),
 #   universal-ctags, nil (nix: nix profile install nixpkgs#nil; releases
@@ -8,30 +9,30 @@
 
 [tools]
 node = "22"                                     # coc.nvim runtime (>= 20 required)
-pipx = "latest"                                 # backend for pipx:* tools below
+pipx = "1.17.5"                                 # backend for pipx:* tools below
 
 # LSP servers (coc generic sources + coc-go)
-"go:golang.org/x/tools/gopls" = "latest"
-"github:mrjosh/helm-ls" = "latest"
-"github:gruntwork-io/terragrunt-ls" = "latest"
-"github:yannh/kubeconform" = "latest"
-terraform-ls = "latest"                         # terraform/hcl LSP
+"go:golang.org/x/tools/gopls" = "0.23.0"
+"github:mrjosh/helm-ls" = "0.5.4"
+"github:gruntwork-io/terragrunt-ls" = "0.0.5"
+"github:yannh/kubeconform" = "0.8.0"
+terraform-ls = "0.39.0"                         # terraform/hcl LSP
 
 # Linters (ALE)
-shellcheck = "latest"
-yamllint = "latest"
-hadolint = "latest"
-tflint = "latest"
-actionlint = "latest"
-"pipx:ansible-lint" = "latest"
-"pipx:flake8" = "latest"
-"cargo:deadnix" = "latest"
-"cargo:statix" = "latest"
+shellcheck = "0.11.0"
+yamllint = "1.38.0"
+hadolint = "2.15.1"
+tflint = "0.64.0"
+actionlint = "1.7.12"
+"pipx:ansible-lint" = "26.9.0"
+"pipx:flake8" = "7.4.1"
+"cargo:deadnix" = "1.3.1"
+"cargo:statix" = "4.8.3"
 
 # Formatters (ALEFix)
-shfmt = "latest"
-"github:kamadorueda/alejandra" = "latest"
-terraform = "latest"                            # terraform fmt
+shfmt = "3.14.1"
+"github:kamadorueda/alejandra" = "4.0.0"
+terraform = "1.16.4"                            # terraform fmt
 
 # Editor tooling
-fzf = "latest"
+fzf = "0.74.4"
