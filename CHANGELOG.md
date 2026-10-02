@@ -7,6 +7,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed
+
+- Minimap reverted to `severin-lemaignan/vim-minimap` (the pre-0.4.0
+  plugin): the wfxr fork renders monochrome density glyphs with no
+  syntax colors, and its git coloring only fires on files with
+  uncommitted changes, so it showed nothing more than the pure-vim
+  version while requiring the `code-minimap` binary. The restored plugin
+  renders the shrunk source with syntax highlighting and needs no
+  external binary. F4 and `:MinimapToggle` unchanged
+
 ## [0.4.0] - 2026-09-21
 
 ### Added

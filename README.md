@@ -104,7 +104,7 @@ PluginBegin
   Plugin 'junegunn/fzf.vim'
   Plugin 'jlanzarotta/bufexplorer'
   Plugin 'mbbill/undotree'
-  Plugin 'wfxr/minimap.vim'
+  Plugin 'severin-lemaignan/vim-minimap'
   " --- completion / LSP (coc.nvim replaced YouCompleteMe) ---
   Plugin 'neoclide/coc.nvim', {'branch': 'release'}
   Plugin 'honza/vim-snippets'
@@ -268,7 +268,7 @@ Makefile          make smoke
 | `plugin/vim_colorscheme.vim` | Colorscheme activation mechanism |
 | `plugin/vim_filetypes.vim` | Custom filetype detection: cloud-init user-data (`#cloud-config`), `terragrunt.hcl`, LXC container config |
 | `plugin/plugin_coc.vim` | coc.nvim LSP: extensions, generic servers, mappings, node runtime resolution (mise) |
-| `plugin/plugin_minimap.vim` | wfxr/minimap.vim options (code-minimap binary from cargo) |
+| `plugin/plugin_minimap.vim` | Minimap stub (severin-lemaignan/vim-minimap, pure vim, no binary) |
 | `plugin/plugin_vimai.vim` | vim-ai AI assistant (local ollama endpoint) |
 | `plugin/plugin_ale.vim` | ALE: linters per filetype, on-demand fixers (`<leader>f`), custom kubeconform linter + apiVersion scoping |
 | `plugin/plugin_gutentags.vim` | ctags exclusions |
@@ -318,7 +318,7 @@ extension list.
 |---|---|
 | `<F2>` | NERDTree toggle |
 | `<F3>` | Plugin Manager sidebar |
-| `<F4>` | Minimap toggle (needs `code-minimap`: `cargo install code-minimap`) |
+| `<F4>` | Minimap toggle (syntax-highlighted, pure vim) |
 | `<F9>` | Mouse capture toggle (vim ⇄ terminal selection) |
 | `<F7>` | Undotree toggle |
 | `<F8>` | Markdown Preview (markdown buffers) |
