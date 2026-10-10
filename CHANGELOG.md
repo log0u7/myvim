@@ -7,6 +7,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed
+
+- Gutentags no longer drops a `tags` file at the root of every opened
+  project: tags are cached centrally in `~/.cache/gutentags`
+  (`g:gutentags_cache_dir`), so tagbar and `:Tags` keep working with a
+  clean project tree
+
 ### Changed
 
 - Minimap reverted to `severin-lemaignan/vim-minimap` (the pre-0.4.0
