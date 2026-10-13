@@ -9,10 +9,14 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v5
-      # vim-vint still imports pkg_resources, removed in setuptools >= 81.
-      - run: pipx install vim-vint && pipx inject vim-vint "setuptools<81"
+      # vim-vint still imports pkg_resources, removed in setuptools >= 81:
+      # pin setuptools and use an explicit venv (pipx/PEP 668 quirks).
       - name: Vim script lint (vint)
-        run: ~/.local/bin/vint autoload/ plugin/ syntax/ ftplugin/ tests/smoke.vim
+        run: |
+          python3 -m venv /tmp/vint
+          /tmp/vint/bin/pip install -q vim-vint "setuptools<81"
+          /tmp/vint/bin/vint --version
+          /tmp/vint/bin/vint autoload/ plugin/ syntax/ ftplugin/ tests/smoke.vim
 
   smoke:
     runs-on: ubuntu-latest
