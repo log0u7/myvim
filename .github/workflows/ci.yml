@@ -52,7 +52,16 @@ jobs:
             "$GITHUB_WORKSPACE/README.md" > vimrc
           ln -s "$GITHUB_WORKSPACE" pack/plugins/start/myvim
           ln -sf ~/.vim/vimrc ~/.vimrc
-      - name: First launch (plugin auto-install)
-        run: vim -Nu ~/.vim/vimrc --not-a-term -c 'qa'
+      - name: First launch (plugin auto-install, wait for async clones)
+        run: |
+          # PluginEnd clones in parallel and returns immediately: poll the
+          # manager's pending-installs map (public test helper), then quit
+          # force (the log buffer is modified, plain qa would refuse).
+          vim -Nu ~/.vim/vimrc --not-a-term \
+            -c 'let l:n=0 | while !empty(plugin_manager#cmd#declare#_pending_names()) && l:n < 600 | sleep 1 | let l:n += 1 | endwhile' \
+            -c 'qa!'
+          missing=$(cd ~/.vim && git submodule status | grep -c '^-') || true
+          echo "missing submodules: $missing"
+          [ "$missing" = "0" ]
       - name: Smoke tests (35 checks)
         run: vim -Nu ~/.vim/vimrc --not-a-term -S "$GITHUB_WORKSPACE/tests/smoke.vim"
