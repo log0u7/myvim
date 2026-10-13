@@ -20,7 +20,7 @@ jobs:
 
   smoke:
     runs-on: ubuntu-latest
-    timeout-minutes: 20
+    timeout-minutes: 25
     steps:
       - uses: actions/checkout@v5
       - uses: jdx/mise-action@v4
@@ -44,8 +44,21 @@ jobs:
           .netrwhist
           plugin/*-secrets.vim
           EOF
-          git submodule add https://github.com/log0u7/vim-plugin-manager.git \
-            pack/plugins/start/vim-plugin-manager
+          ok=0
+          for i in 1 2 3; do
+            if timeout 180 git submodule add --depth 1 \
+              https://github.com/log0u7/vim-plugin-manager.git \
+              pack/plugins/start/vim-plugin-manager; then
+              ok=1
+              break
+            fi
+            echo "clone attempt $i failed, cleaning and retrying"
+            rm -rf .git/modules pack/plugins/start/vim-plugin-manager
+            git submodule deinit -f pack/plugins/start/vim-plugin-manager 2>/dev/null || true
+            git rm -f --cached pack/plugins/start/vim-plugin-manager 2>/dev/null || true
+            sleep 5
+          done
+          [ "$ok" = "1" ]
           # The vimrc lives in the README (single source of truth): extract
           # the first ```vim block.
           awk '/^```vim$/{f=1;next} /^```$/{if(f) exit} f' \
