@@ -70,12 +70,22 @@ jobs:
           # PluginEnd clones in parallel and returns immediately: poll the
           # manager's pending-installs map (public test helper), then quit
           # force (the log buffer is modified, plain qa would refuse).
-          vim -Nu ~/.vim/vimrc --not-a-term \
+          # -V1 + shell timeout: on hang, the verbose log shows the exact
+          # point where the startup blocked.
+          set +e
+          timeout 600 vim -Nu ~/.vim/vimrc --not-a-term -V1 \
             -c 'let l:n=0 | while !empty(plugin_manager#cmd#declare#_pending_names()) && l:n < 600 | sleep 1 | let l:n += 1 | endwhile' \
-            -c 'qa!'
+            -c 'qa!' > /tmp/vim-launch.out 2> /tmp/vim-launch.err
+          code=$?
+          echo "first-launch exit code: $code (124 = hang)"
+          echo "--- last 30 verbose lines on hang:"
+          tail -30 /tmp/vim-launch.err
+          echo "--- stdout tail:"
+          tail -10 /tmp/vim-launch.out
           missing=$(cd ~/.vim && git submodule status | grep -c '^-') || true
           echo "missing submodules: $missing"
           [ "$missing" = "0" ]
+          [ "$code" != "124" ]
       - name: Second launch diagnostic (isolated, verbose, time-capped)
         run: |
           set +e
