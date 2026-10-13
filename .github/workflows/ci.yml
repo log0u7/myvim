@@ -1,0 +1,53 @@
+name: CI
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+      - run: pipx install vim-vint
+      - name: Vim script lint (vint)
+        run: ~/.local/bin/vint autoload/ plugin/ syntax/ ftplugin/ tests/smoke.vim
+
+  smoke:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v5
+      - uses: jdx/mise-action@v4
+      - name: Install full vim
+        run: sudo apt-get update -qq && sudo apt-get install -y -qq vim
+      - name: Build the live ~/.vim (fresh install)
+        run: |
+          set -e
+          git init -q ~/.vim && cd ~/.vim
+          git config user.email ci@example.invalid
+          git config user.name ci
+          cat > .gitignore <<'EOF'
+          undodir/*
+          swapdir/*
+          logs/
+          *.swp
+          *.swo
+          .*.swp
+          doc/tags
+          **/doc/tags
+          .netrwhist
+          plugin/*-secrets.vim
+          EOF
+          git submodule add https://github.com/log0u7/vim-plugin-manager.git \
+            pack/plugins/start/vim-plugin-manager
+          # The vimrc lives in the README (single source of truth): extract
+          # the first ```vim block.
+          awk '/^```vim$/{f=1;next} /^```$/{if(f) exit} f' \
+            "$GITHUB_WORKSPACE/README.md" > vimrc
+          ln -s "$GITHUB_WORKSPACE" pack/plugins/start/myvim
+          ln -sf ~/.vim/vimrc ~/.vimrc
+      - name: First launch (plugin auto-install)
+        run: vim -Nu ~/.vim/vimrc --not-a-term -c 'qa'
+      - name: Smoke tests (35 checks)
+        run: vim -Nu ~/.vim/vimrc --not-a-term -S "$GITHUB_WORKSPACE/tests/smoke.vim"
