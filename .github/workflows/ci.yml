@@ -86,4 +86,15 @@ jobs:
           done
           [ "$missing" = "0" ]
       - name: Smoke tests (35 checks)
-        run: vim -Nu ~/.vim/vimrc --not-a-term -S "$GITHUB_WORKSPACE/tests/smoke.vim"
+        run: |
+          set +e
+          timeout 120 vim -Nu ~/.vim/vimrc --not-a-term -V1 \
+            -S "$GITHUB_WORKSPACE/tests/smoke.vim" \
+            > /tmp/smoke.out 2> /tmp/smoke.err
+          code=$?
+          echo "smoke exit code: $code (124 = hang)"
+          echo "--- last 30 verbose lines:"
+          tail -30 /tmp/smoke.err
+          echo "--- smoke stdout tail:"
+          tail -20 /tmp/smoke.out
+          [ "$code" = "0" ]
