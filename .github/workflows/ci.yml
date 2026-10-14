@@ -8,7 +8,7 @@ jobs:
   lint:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@v7
       # vim-vint still imports pkg_resources, removed in setuptools >= 81:
       # pin setuptools and use an explicit venv (pipx/PEP 668 quirks).
       - name: Vim script lint (vint)
@@ -22,7 +22,7 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 25
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@v7
       - uses: jdx/mise-action@v4
       - name: Install full vim
         run: sudo apt-get update -qq && sudo apt-get install -y -qq vim
