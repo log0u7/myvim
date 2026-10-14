@@ -9,6 +9,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
+- Minimap reverted to `severin-lemaignan/vim-minimap` (the pre-0.4.0
+  plugin): the wfxr fork renders monochrome density glyphs with no
+  syntax colors, and its git coloring only fires on files with
+  uncommitted changes, so it showed nothing more than the pure-vim
+  version while requiring the `code-minimap` binary. The restored plugin
+  renders the shrunk source with syntax highlighting and needs no
+  external binary. F4 and `:MinimapToggle` unchanged
 - CI: `actions/checkout` 5 to 7 (Dependabot actions group).
 
 ### Fixed
@@ -17,16 +24,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   project: tags are cached centrally in `~/.cache/gutentags`
   (`g:gutentags_cache_dir`), so tagbar and `:Tags` keep working with a
   clean project tree
-
-### Changed
-
-- Minimap reverted to `severin-lemaignan/vim-minimap` (the pre-0.4.0
-  plugin): the wfxr fork renders monochrome density glyphs with no
-  syntax colors, and its git coloring only fires on files with
-  uncommitted changes, so it showed nothing more than the pure-vim
-  version while requiring the `code-minimap` binary. The restored plugin
-  renders the shrunk source with syntax highlighting and needs no
-  external binary. F4 and `:MinimapToggle` unchanged
+- ALE's kubeconform linter is registered only when ALE is actually
+  loaded (`exists('*ale#linter#Define')` guard): fresh installs whose
+  pack load order defers ALE no longer hit an E117 mid-startup
 
 ### Added
 
