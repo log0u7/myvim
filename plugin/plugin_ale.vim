@@ -51,13 +51,18 @@ function! s:kubeconform_handle(buffer, lines) abort
   return l:output
 endfunction
 
-call ale#linter#Define('yaml', {
-\   'name': 'kubeconform',
-\   'executable': 'kubeconform',
-\   'command': 'kubeconform -strict -ignore-missing-schemas -output json -',
-\   'callback': function('s:kubeconform_handle'),
-\   'output_stream': 'stdout',
-\ })
+" Guard: on a fresh install MyVim may load before ALE is cloned (native
+" packs load alphabetically) - skip the custom linter registration in that
+" case instead of raising E117 mid-startup.
+if exists('*ale#linter#Define')
+  call ale#linter#Define('yaml', {
+  \   'name': 'kubeconform',
+  \   'executable': 'kubeconform',
+  \   'command': 'kubeconform -strict -ignore-missing-schemas -output json -',
+  \   'callback': function('s:kubeconform_handle'),
+  \   'output_stream': 'stdout',
+  \ })
+endif
 
 " actionlint understands GitHub workflow files only: linting every yaml
 " (compose, k8s, ansible, gitlab-ci) produced false errors. Workflow

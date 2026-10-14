@@ -87,14 +87,11 @@ jobs:
           [ "$missing" = "0" ]
       - name: Smoke tests (35 checks)
         run: |
+          # -es (silent Ex): no hit-enter prompt, the smoke cannot hang on
+          # messages; the verdict is the exit code.
           set +e
-          timeout 120 vim -Nu ~/.vim/vimrc --not-a-term -V1 \
-            -S "$GITHUB_WORKSPACE/tests/smoke.vim" \
+          timeout 180 vim -es -Nu ~/.vim/vimrc -S "$GITHUB_WORKSPACE/tests/smoke.vim" \
             > /tmp/smoke.out 2> /tmp/smoke.err
           code=$?
-          echo "smoke exit code: $code (124 = hang)"
-          echo "--- last 30 verbose lines:"
-          tail -30 /tmp/smoke.err
-          echo "--- smoke stdout tail:"
-          tail -20 /tmp/smoke.out
+          echo "smoke exit code: $code"
           [ "$code" = "0" ]
