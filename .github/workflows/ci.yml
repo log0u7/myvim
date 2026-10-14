@@ -94,4 +94,5 @@ jobs:
             > /tmp/smoke.out 2> /tmp/smoke.err
           code=$?
           echo "smoke exit code: $code"
+          cat /tmp/myvim-smoke-fail.txt 2>/dev/null || true
           [ "$code" = "0" ]
