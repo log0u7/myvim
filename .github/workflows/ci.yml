@@ -85,6 +85,8 @@ jobs:
             [ "$missing" = "0" ] && break
           done
           [ "$missing" = "0" ]
+          # myvim is a symlink pack, the manager never generates its tags.
+          vim -es -Nu ~/.vim/vimrc -c 'helptags ~/.vim/pack/plugins/start/myvim/doc' -c 'qa!'
       - name: Smoke tests (35 checks)
         run: |
           # -es (silent Ex): no hit-enter prompt, the smoke cannot hang on
