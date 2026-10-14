@@ -1,0 +1,100 @@
+name: CI
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+      # vim-vint still imports pkg_resources, removed in setuptools >= 81:
+      # pin setuptools and use an explicit venv (pipx/PEP 668 quirks).
+      - name: Vim script lint (vint)
+        run: |
+          python3 -m venv /tmp/vint
+          /tmp/vint/bin/pip install -q vim-vint "setuptools<81"
+          /tmp/vint/bin/vint --version
+          /tmp/vint/bin/vint autoload/ plugin/ syntax/ ftplugin/ tests/smoke.vim
+
+  smoke:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@v5
+      - uses: jdx/mise-action@v4
+      - name: Install full vim
+        run: sudo apt-get update -qq && sudo apt-get install -y -qq vim
+      - name: Build the live ~/.vim (fresh install)
+        run: |
+          set -e
+          git init -q ~/.vim && cd ~/.vim
+          git config user.email ci@example.invalid
+          git config user.name ci
+          cat > .gitignore <<'EOF'
+          undodir/*
+          swapdir/*
+          logs/
+          *.swp
+          *.swo
+          .*.swp
+          doc/tags
+          **/doc/tags
+          .netrwhist
+          plugin/*-secrets.vim
+          EOF
+          ok=0
+          for i in 1 2 3; do
+            if timeout 180 git submodule add --depth 1 \
+              https://github.com/log0u7/vim-plugin-manager.git \
+              pack/plugins/start/vim-plugin-manager; then
+              ok=1
+              break
+            fi
+            echo "clone attempt $i failed, cleaning and retrying"
+            rm -rf .git/modules pack/plugins/start/vim-plugin-manager
+            git submodule deinit -f pack/plugins/start/vim-plugin-manager 2>/dev/null || true
+            git rm -f --cached pack/plugins/start/vim-plugin-manager 2>/dev/null || true
+            sleep 5
+          done
+          [ "$ok" = "1" ]
+          # The vimrc lives in the README (single source of truth): extract
+          # the first ```vim block.
+          awk '/^```vim$/{f=1;next} /^```$/{if(f) exit} f' \
+            "$GITHUB_WORKSPACE/README.md" > vimrc
+          ln -s "$GITHUB_WORKSPACE" pack/plugins/start/myvim
+          ln -sf ~/.vim/vimrc ~/.vimrc
+      - name: Install plugins (async clone rounds)
+        run: |
+          # PluginBegin clones missing plugins in the background: keep a vim
+          # alive while the queue drains, then verify on the filesystem.
+          # copilot/codeium land in pack/plugins/opt (load: opt).
+          missing=99
+          for round in 1 2 3; do
+            timeout 300 vim -Nu ~/.vim/vimrc --not-a-term -c 'sleep 240' -c 'qa!' || true
+            missing=0
+            for p in $(grep -oP "^\s*Plugin '\K[^' ]+" ~/.vim/vimrc); do
+              name=${p##*/}; name=${name%%,*}
+              if [ ! -e ~/.vim/pack/plugins/start/$name ] && \
+                 [ ! -e ~/.vim/pack/plugins/opt/$name ]; then
+                missing=$((missing+1)); echo "missing: $name"
+              fi
+            done
+            echo "round $round: $missing missing"
+            [ "$missing" = "0" ] && break
+          done
+          [ "$missing" = "0" ]
+          # myvim is a symlink pack, the manager never generates its tags.
+          vim -es -Nu ~/.vim/vimrc -c 'helptags ~/.vim/pack/plugins/start/myvim/doc' -c 'qa!'
+      - name: Smoke tests (35 checks)
+        run: |
+          # -es (silent Ex): no hit-enter prompt, the smoke cannot hang on
+          # messages; the verdict is the exit code.
+          set +e
+          timeout 180 vim -es -Nu ~/.vim/vimrc -S "$GITHUB_WORKSPACE/tests/smoke.vim" \
+            > /tmp/smoke.out 2> /tmp/smoke.err
+          code=$?
+          echo "smoke exit code: $code"
+          cat /tmp/myvim-smoke-fail.txt 2>/dev/null || true
+          [ "$code" = "0" ]
