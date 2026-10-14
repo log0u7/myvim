@@ -5,14 +5,7 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [Unreleased]
-
-### Fixed
-
-- Gutentags no longer drops a `tags` file at the root of every opened
-  project: tags are cached centrally in `~/.cache/gutentags`
-  (`g:gutentags_cache_dir`), so tagbar and `:Tags` keep working with a
-  clean project tree
+## [0.5.0] - 2026-10-14
 
 ### Changed
 
@@ -23,6 +16,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   version while requiring the `code-minimap` binary. The restored plugin
   renders the shrunk source with syntax highlighting and needs no
   external binary. F4 and `:MinimapToggle` unchanged
+- CI: `actions/checkout` 5 to 7 (Dependabot actions group).
+
+### Fixed
+
+- Gutentags no longer drops a `tags` file at the root of every opened
+  project: tags are cached centrally in `~/.cache/gutentags`
+  (`g:gutentags_cache_dir`), so tagbar and `:Tags` keep working with a
+  clean project tree
+- ALE's kubeconform linter is registered only when ALE is actually
+  loaded (`exists('*ale#linter#Define')` guard): fresh installs whose
+  pack load order defers ALE no longer hit an E117 mid-startup
 
 ### Added
 
