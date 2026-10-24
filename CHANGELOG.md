@@ -5,6 +5,25 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.6.0] - 2026-10-25
+
+### Added
+
+- The repository ships the `vimrc` again: the essentials that must run
+  before plugins load plus the `PluginBegin` block (MyVim declared last),
+  verbatim from the live setup. Fresh installs copy or fetch it instead of
+  hand-writing it.
+- The repository embeds `vim-plugin-manager` again as the
+  `pack/plugins/start/vim-plugin-manager` submodule, pinned to `v2.2.10`:
+  a recursive clone provides a working IDE, and the Ansible `vim` role can
+  pin the manager tag by checking out the tag inside the submodule.
+
+### Changed
+
+- README quickstart: the inline 66-line vimrc is replaced by the shipped
+  file (fetched with `curl`), keeping the repository as the single source
+  of truth.
+
 ## [0.5.0] - 2026-10-14
 
 ### Changed
