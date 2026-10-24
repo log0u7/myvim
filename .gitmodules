@@ -1,0 +1,3 @@
+[submodule "pack/plugins/start/vim-plugin-manager"]
+	path = pack/plugins/start/vim-plugin-manager
+	url = https://github.com/log0u7/vim-plugin-manager.git

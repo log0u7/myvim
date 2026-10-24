@@ -59,10 +59,8 @@ jobs:
             sleep 5
           done
           [ "$ok" = "1" ]
-          # The vimrc lives in the README (single source of truth): extract
-          # the first ```vim block.
-          awk '/^```vim$/{f=1;next} /^```$/{if(f) exit} f' \
-            "$GITHUB_WORKSPACE/README.md" > vimrc
+          # The vimrc is shipped in the repository (single source of truth).
+          cp "$GITHUB_WORKSPACE/vimrc" vimrc
           ln -s "$GITHUB_WORKSPACE" pack/plugins/start/myvim
           ln -sf ~/.vim/vimrc ~/.vimrc
       - name: Install plugins (async clone rounds)
