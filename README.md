@@ -30,7 +30,14 @@ Vim 8's native package system.
 
 ## Quickstart
 
+The install is deliberately manual: each step shows you a piece of the
+layout you will own (`~/.vim` is a git repository, the plugin manager is
+a submodule of *your* repository, the vimrc is a fetched file you can
+edit). Read them, don't just paste them.
+
 ### 1. Backup your current setup
+
+Your existing config is replaced, not merged:
 
 ```bash
 cp -a ~/.vim ~/.vim~
@@ -38,6 +45,10 @@ cp ~/.vimrc ~/.vimrc~
 ```
 
 ### 2. Prepare the new ~/.vim
+
+`~/.vim` itself is a git repository: it tracks your vimrc and one
+submodule per plugin, which is what makes the setup reproducible and
+backable.
 
 ```bash
 cd ~/.vim
@@ -57,6 +68,10 @@ EOF
 ```
 
 ### 3. Install vim-plugin-manager
+
+The manager lives as a submodule of *your* `~/.vim`, not as a global
+install: every machine owns its pinned copy, and `:PluginManager backup`
+pushes it along with everything else.
 
 ```bash
 git submodule add https://github.com/log0u7/vim-plugin-manager.git \
@@ -79,6 +94,9 @@ On startup, every missing plugin is installed automatically as a submodule.
 
 ### 5. Symlink the vimrc
 
+Vim reads `~/.vimrc`, the file lives in the `~/.vim` repository so both
+stay in sync:
+
 ```bash
 ln -sf ~/.vim/vimrc ~/.vimrc
 ```
@@ -94,6 +112,27 @@ plugin as a submodule, then commits the changes. Commit and push `~/.vim` to
 back the setup up (`:PluginManager backup` once a remote exists). The
 `swapdir/` and `undodir/` directories are created automatically (mode 0700)
 by MyVim at first start; only their `.gitignore` entries are needed.
+
+## About the embedded vim-plugin-manager
+
+This repository carries its own `pack/plugins/start/vim-plugin-manager`
+submodule, pinned to a manager tag. It is **not** part of the
+installation: the manager you use lives in *your* `~/.vim` (quickstart
+step 3), and the two copies may sit at different versions.
+
+The embedded submodule exists for pinning only:
+
+- the Ansible `vim` role pins the manager tag by checking out the tag
+  inside the submodule;
+- CI and development reference a known-good manager version next to the
+  configuration it is tested against.
+
+To update the manager on an installed machine, update the submodule of
+your `~/.vim` (not this repository's):
+
+```bash
+git -C ~/.vim submodule update --remote pack/plugins/start/vim-plugin-manager
+```
 
 ## Post-install steps
 

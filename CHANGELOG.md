@@ -5,6 +5,16 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [Unreleased]
+
+### Changed
+
+- README: the quickstart states what each step builds (a git-tracked
+  `~/.vim`, the manager as a submodule of the user's repository, the
+  vimrc symlink), and a new section explains that the embedded
+  `vim-plugin-manager` submodule exists for pinning (Ansible role, CI),
+  not for installation.
+
 ## [0.6.1] - 2026-10-25
 
 ### Changed
